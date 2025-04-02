@@ -2,21 +2,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
-	
-	static int K, W, H;
-	static int[][][] map;
-	
-	static int[] drM = {0,1,-1,0}; // 2 2
-	static int[] dcM = {1,0,0,-1};
-	
-	static int[] drH = {1,2,-1,-2,-1,-2,1,2}; // 2 6
-	static int[] dcH = {2,1,2,1,-2,-1,-2,-1};
 	
 	static int sol;
 	static boolean find;
@@ -28,63 +18,65 @@ public class Main {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st;
 		
-		K = Integer.parseInt(br.readLine());
+		int K = Integer.parseInt(br.readLine());
 		st = new StringTokenizer(br.readLine());
-		W = Integer.parseInt(st.nextToken());
-		H = Integer.parseInt(st.nextToken());
+		int W = Integer.parseInt(st.nextToken());
+		int H = Integer.parseInt(st.nextToken());
 		
-		map = new int[K+1][H][W]; // map[j][][] 말 이동기회 j번 남음
+		int[][] map = new int[H][W]; // map[j][][] 말 이동기회 j번 사용
 		
 		for (int r=0; r<H; r++) {
 			st = new StringTokenizer(br.readLine());
 			for (int c=0; c<W; c++) {
-				int val = Integer.parseInt(st.nextToken());
-				for (int j=0; j<=K; j++) {
-					if (val == 1) {
-						map[j][r][c] = -1;
-					} else {
-						map[j][r][c] = Integer.MAX_VALUE-1;
-					}
-				}
+				if (Integer.parseInt(st.nextToken()) == 1) {	
+					map[r][c] = -1;						// 벽
+				} else {
+					map[r][c] = Integer.MAX_VALUE;		// 방문 가능 구역
+				}				
 			}
 		}
-		// 1: 벽 0: 방문가능 (방문할 때마다 -1, 최대값으로 갱신)
+		map[0][0] = 0;
+		
+		int[] drM = {0,1,-1,0};
+		int[] dcM = {1,0,0,-1};
+		int[] drH = {1,2,-1,-2,-1,-2,1,2};
+		int[] dcH = {2,1,2,1,-2,-1,-2,-1};
 		
 		sol = Integer.MAX_VALUE;
 		find = false;
-		// -------------------------------------------
 		
-		ArrayList<Queue<int[]>> qList = new ArrayList<>();
-		for (int j=0; j<=K; j++) {
-			qList.add(new ArrayDeque<>());
-		}
-		
-		qList.get(0).add(new int[] {0,0,0}); // r c cnt;
+		Queue<int[]> curQ = new ArrayDeque<>();
+		curQ.add(new int[] {0,0}); // r c cnt;
 		
 		for (int j=0; j<=K; j++) {
-//			System.out.println("h");
-//			System.out.println(qList.get(j).size());
+			
+//			for (int[] pos : curQ) {
+//				System.out.print(Arrays.toString(pos));
+//				System.out.println();
+//			}
+			
+			Queue<int[]> nextQ = new ArrayDeque<>();
+			int[][] nextMap = new int[H][W];
+			for (int r=0; r<H; r++) {
+				for (int c=0; c<W; c++) {
+					nextMap[r][c] = map[r][c];
+				}
+			}
 
-			while(!qList.get(j).isEmpty()) {
+			while(!curQ.isEmpty()) {
 				
-				int[] arr = qList.get(j).poll();
+				int[] arr = curQ.poll();
 				int r = arr[0];
 				int c = arr[1];
-				int cnt = arr[2];
-				
-				if (r == H-1 && c == W-1) {
-					find = true;
-					sol = Math.min(sol, cnt);
-//					System.out.println(j + " " +  sol);
-				}
 				
 				for (int d=0; d<4; d++) {
 					int nr = r+drM[d];
 					int nc = c+dcM[d];
 					if (nr<0 || nc<0 || nr>=H || nc>=W) continue;
-					if (map[j][nr][nc] <= cnt+1) continue; // 기존의 -cnt(음수)가 현재 위치 -cnt-1보다 크다면 pass; 
-					map[j][nr][nc] = cnt+1;
-					qList.get(j).add(new int[] {nr, nc, cnt+1});
+					if (map[nr][nc] <= map[r][c]+1) continue;
+					map[nr][nc] = map[r][c]+1;
+					nextMap[nr][nc] = Math.min(nextMap[nr][nc], map[r][c]+1);
+					curQ.add(new int[] {nr, nc});
 				}
 				
 				if (j == K) continue;
@@ -92,66 +84,23 @@ public class Main {
 					int nr = r+drH[d];
 					int nc = c+dcH[d];
 					if (nr<0 || nc<0 || nr>=H || nc>=W) continue;
-					if (map[j+1][nr][nc] <= cnt+1) continue;
-					map[j+1][nr][nc] = cnt+1;
-					qList.get(j+1).add(new int[] {nr, nc, cnt+1});
+					if (nextMap[nr][nc] <= map[r][c]+1) continue;
+					nextMap[nr][nc] = map[r][c]+1;
+					nextQ.add(new int[] {nr, nc});
 				}
 				
 			}
 			
-//			System.out.println(Arrays.deepToString(map[j]));
-			
-			if (j == K) continue;
-			for (int r=0; r<H; r++) {
-				for (int c=0; c<W; c++) {
-					map[j+1][r][c] = Math.min(map[j+1][r][c], map[j][r][c]);
-				}
-			}
+			curQ = nextQ;
+			map = nextMap;
+
 		}
 		
-		
-		
-		
-		
-		
-		
-		if (find) {
-			System.out.println(sol);
-		} else {
-			System.out.println(-1);
-		}
+		if (map[H-1][W-1] == Integer.MAX_VALUE) map[H-1][W-1] = -1;
+		System.out.println(map[H-1][W-1]);
 
 	}
-	
-//	private static void DFS(int r, int c, int k, int cnt) {
-//		
-//		if (r == H-1 && c == W-1) {
-//			find = true;
-//			sol = Math.min(sol, cnt);
-//		}
-//		
-//		// k==0 여부와 상관없이 상하좌우 이동가능(원숭이)
-//		for (int d=0; d<4; d++) {
-//			int nr = r+drM[d];
-//			int nc = c+dcM[d];
-//			if (nr<0 || nc<0 || nr>=H || nc>=W) continue;
-//			if (map[nr][nc]) continue;
-//			map[nr][nc] = true;
-//			DFS(nr, nc, k, cnt+1);
-//			map[nr][nc] = false; // 원상복구
-//		}
-//		if (k <= 0) return;
-//		for (int d=0; d<8; d++) {
-//			int nr = r+drH[d];
-//			int nc = c+dcH[d];
-//			if (nr<0 || nc<0 || nr>=H || nc>=W) continue;
-//			if (map[nr][nc]) continue;
-//			map[nr][nc] = true;
-//			DFS(nr, nc, k-1, cnt+1);
-//			map[nr][nc] = false; // 원상복구
-//		}
-//		
-//	}
+
 
 }
 
