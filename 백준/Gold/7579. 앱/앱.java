@@ -14,10 +14,11 @@ public class Main {
 		int N = Integer.parseInt(st.nextToken());
 		int M = Integer.parseInt(st.nextToken());
 		
-		int[] mMax = new int[N*100+1]; // mMax[cost] 해당 cost소모시 확보가능한 최대 메모리 크기
+		
 		
 		int[] mSize = new int[N];
 		int[] cost = new int[N];
+		int costSum = 0;
 		
 		st = new StringTokenizer(br.readLine());
 		for (int i=0; i<N; i++) {
@@ -27,10 +28,15 @@ public class Main {
 		st = new StringTokenizer(br.readLine());
 		for (int i=0; i<N; i++) {
 			cost[i] = Integer.parseInt(st.nextToken());
+			costSum += cost[i];
 		}
 		
+		
+		int[] mMax = new int[costSum+1]; // mMax[cost] 해당 cost소모시 확보가능한 최대 메모리 크기
+		
+		
 		for (int i=0; i<N; i++) {
-			for (int c=N*100; c>= cost[i]; c--) {
+			for (int c=costSum; c>= cost[i]; c--) {
 				mMax[c] = Math.max(mMax[c], mMax[c-cost[i]]+mSize[i]);
 			}
 		}
@@ -38,7 +44,7 @@ public class Main {
 		
 //		System.out.println(Arrays.toString(mMax));
 		
-		for (int c=0; c<=N*100; c++) {
+		for (int c=0; c<=costSum; c++) {
 			if (mMax[c] < M) continue;
 			System.out.println(c);
 			break;
