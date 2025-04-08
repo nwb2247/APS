@@ -71,7 +71,6 @@ public class Solution {
 					if (map[i][j] != 0) continue;
 					for (int k=0; k<4; k++) {
 						startR = i; startC = j; dir = k;
-//						System.out.println("start " + i + " " + j + " " + k);
 						r = startR; c = startC;
 						score = 0; fin = false;
 						move();
@@ -89,8 +88,7 @@ public class Solution {
 		}
 		
 		System.out.println(sb.toString());
-		
-		
+
 
 	}
 	
