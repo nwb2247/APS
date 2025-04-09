@@ -1,8 +1,9 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.util.ArrayDeque;
 import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -15,8 +16,8 @@ public class Main {
 		int C = Integer.parseInt(st.nextToken());
 		
 		// 물과 비버 모두 pq로 관리
-		PriorityQueue<int[]> pqS = new PriorityQueue<>((o1, o2) -> o1[2] - o2[2]);
-		PriorityQueue<int[]> pqW = new PriorityQueue<>((o1, o2) -> o1[2] - o2[2]);
+		Queue<int[]> pqS = new ArrayDeque<>();
+		Queue<int[]> pqW = new ArrayDeque<>();
 				
 		int[][] dir = {{0,1},{0,-1},{1,0},{-1,0}};
 		
