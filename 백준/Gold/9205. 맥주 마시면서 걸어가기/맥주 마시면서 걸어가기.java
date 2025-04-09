@@ -28,11 +28,13 @@ public class Main {
 			boolean[][] possible = new boolean[N+2][N+2];
 			for (int s=0; s<N+2; s++) {
 				for (int e=0; e<N+2; e++) {
+					// 맨해튼 거리 계산후 1000보다 가까우면 도달가능
 					int d = Math.abs(coord[s][0]-coord[e][0])+Math.abs(coord[s][1]-coord[e][1]);
 					if (d <= 1000) possible[s][e] = true;
 				}
 			}
 			
+			// 플로이드 워셜을 통해 각 편의점을 추가로 들리면 도달가능해지는지 확인
 			for (int k=0; k<N+2; k++) {
 				for (int s=0; s<N+2; s++) {
 					for (int e=0; e<N+2; e++) {
@@ -42,6 +44,7 @@ public class Main {
 				}
 			}
 			
+			// 집부터 축제까지 도달가능 여부확인
 			if (possible[0][N+1]) {
 				sb.append("happy");
 			} else {
