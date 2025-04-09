@@ -33,7 +33,8 @@ public class Solution {
 					for (int e=0; e<N; e++) {
 //						if (dist[s][e] < dist[s][k]+dist[k][e]) continue;
 //						if (dist[s][e] <= dist[s][k]+dist[k][e]) continue;
-						if (dist[s][e] > dist[s][k]+dist[k][e]) dist[s][e] = dist[s][k]+dist[k][e];
+//						if (dist[s][e] > dist[s][k]+dist[k][e]) dist[s][e] = dist[s][k]+dist[k][e];
+						dist[s][e] = Math.min(dist[s][e], dist[s][k]+dist[k][e]);
 					}
 				}
 			}
@@ -44,7 +45,8 @@ public class Solution {
 				for (int e=0; e<N; e++) {
 					sum += dist[s][e];
 				}
-				if (sum < sol) sol = sum;
+//				if (sum < sol) sol = sum;
+				sol = Math.min(sol, sum);
 			}
 			
 			sb.append("#").append(tc).append(" ").append(sol).append("\n");
@@ -57,4 +59,5 @@ public class Solution {
 	}
 
 }
+
 
