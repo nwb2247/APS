@@ -1,8 +1,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.Scanner;
 import java.util.StringTokenizer;
 
 public class Solution {
@@ -26,6 +24,7 @@ public class Solution {
 					dist[s][e] = Integer.MAX_VALUE/2;
 					// INF끼리 더하는 경우가 있으므로 overflow 방지 위해 2로 나눠줌
 				}
+				dist[s][s] = 0;
 			}
 			
 			for (int k=0; k<N; k++) {
@@ -46,7 +45,6 @@ public class Solution {
 				if (sol < sum) continue;
 				sol = sum;
 			}
-			sol = sol-2;
 			
 			sb.append("#").append(tc).append(" ").append(sol).append("\n");
 			
