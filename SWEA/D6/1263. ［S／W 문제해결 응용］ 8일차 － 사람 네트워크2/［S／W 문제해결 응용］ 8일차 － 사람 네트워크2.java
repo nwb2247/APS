@@ -1,22 +1,27 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 
 public class Solution {
 
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
+	public static void main(String[] args) throws IOException {
+
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
 		StringBuilder sb = new StringBuilder();
 		
-		int TC = sc.nextInt();
+		int TC = Integer.parseInt(br.readLine());
 		
 		for (int tc=1; tc<=TC; tc++) {
-			int N = sc.nextInt();
+			st = new StringTokenizer(br.readLine());
+			int N = Integer.parseInt(st.nextToken());
 			int[][] dist = new int[N][N]; // dist[s][e] s에서 e로 가는 거리
 			for (int s=0; s<N; s++) {
 				for (int e=0; e<N; e++) {
-					dist[s][e] = sc.nextInt();
+					dist[s][e] = Integer.parseInt(st.nextToken());
 					if (dist[s][e] != 0) continue;
 					dist[s][e] = Integer.MAX_VALUE/2;
 					// INF끼리 더하는 경우가 있으므로 overflow 방지 위해 2로 나눠줌
