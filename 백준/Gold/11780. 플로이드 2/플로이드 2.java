@@ -37,6 +37,7 @@ public class Main {
 					if (dist[s][e] <= dist[s][k]+dist[k][e]) continue;
 					dist[s][e] = dist[s][k]+dist[k][e];
 					next[s][e] = next[s][k];
+					// next[s][e]에 k가 아닌 next[s][k]를 대입해야함에 주의 (s에서 k로 가기 위해 거쳐야 하는 곳)
 				}
 			}
 		}
