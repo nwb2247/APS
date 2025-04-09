@@ -20,8 +20,9 @@ public class Solution {
 			for (int s=0; s<N; s++) {
 				for (int e=0; e<N; e++) {
 					dist[s][e] = Integer.parseInt(st.nextToken());
-					if (dist[s][e] != 0) continue;
-					dist[s][e] = Integer.MAX_VALUE/2;
+//					if (dist[s][e] != 0) continue;
+//					dist[s][e] = Integer.MAX_VALUE/2;
+					if (dist[s][e] == 0) dist[s][e] = Integer.MAX_VALUE/2;
 					// INF끼리 더하는 경우가 있으므로 overflow 방지 위해 2로 나눠줌
 				}
 				dist[s][s] = 0;
@@ -30,8 +31,9 @@ public class Solution {
 			for (int k=0; k<N; k++) {
 				for (int s=0; s<N; s++) {
 					for (int e=0; e<N; e++) {
-						if (dist[s][e] < dist[s][k]+dist[k][e]) continue;
-						dist[s][e] = dist[s][k]+dist[k][e];
+//						if (dist[s][e] < dist[s][k]+dist[k][e]) continue;
+//						if (dist[s][e] <= dist[s][k]+dist[k][e]) continue;
+						if (dist[s][e] > dist[s][k]+dist[k][e]) dist[s][e] = dist[s][k]+dist[k][e];
 					}
 				}
 			}
@@ -42,8 +44,7 @@ public class Solution {
 				for (int e=0; e<N; e++) {
 					sum += dist[s][e];
 				}
-				if (sol < sum) continue;
-				sol = sum;
+				if (sum < sol) sol = sum;
 			}
 			
 			sb.append("#").append(tc).append(" ").append(sol).append("\n");
