@@ -61,10 +61,11 @@ public class Main {
 		Arrays.fill(dist, Long.MAX_VALUE/2);
 		
 		st = new StringTokenizer(br.readLine());
+		// pq에 모든 면접장 위치를 다 집어 넣고 시작함
 		for (int i=0; i<K; i++) {
-			int start = Integer.parseInt(st.nextToken());
-			dist[start] = 0;
-			pq.offer(new Node(start, dist[start]));
+			int start = Integer.parseInt(st.nextToken()); 	// 면접장 위치
+			dist[start] = 0;				// 면접장은 면접장까지의 거리가 0임
+			pq.offer(new Node(start, dist[start]));		// pq에 집어 넣음
 			
 		}
 
