@@ -19,15 +19,11 @@ public class Solution {
 			int N = Integer.parseInt(st.nextToken());
 			int M = Integer.parseInt(st.nextToken());
 			
-			int firstOn = 1;
-			
 			boolean isOn = true;
-			for (int i=1; i<=N; i++) {
-				if ((firstOn & M) == 0) {
-					isOn = false;
-					break;
-				}
-				firstOn = firstOn<<1;
+			for (int i=0; i<N; i++) {
+				if ((1<<i & M) != 0) continue;
+				isOn = false;
+				break;
 			}
 			
 			sb.append("#").append(tc).append(" ");
