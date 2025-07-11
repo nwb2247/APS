@@ -1,44 +1,35 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
-class Main {
+public class Main {
+    public static void main(String[] args) throws IOException {
 
-	public static void main(String[] args) throws Exception {
-		
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in)); 
-		
-		ArrayList<ArrayList<Integer>> nums = new ArrayList<>(100);
-		
-		for(int i=0; i<100; i++) {
-			nums.add(new ArrayList<>(100));
-			for(int j=0; j<100; j++) {
-				nums.get(i).add(0);
-			}
-		}
-		
-		int N = Integer.parseInt(br.readLine());
-		
-		for(int n=0; n<N; n++) {
-			StringTokenizer st = new StringTokenizer(br.readLine());
-			int X = Integer.parseInt(st.nextToken());
-			int Y = Integer.parseInt(st.nextToken());
-			
-			for(int x=X; x<X+10; x++) {
-				for(int y=Y; y<Y+10; y++) {
-					int origin = nums.get(y).get(x);
-					nums.get(y).set(x, origin+1);
-				}
-			}	
-			
-		}
-		
-		int sum = 0;
-		for(int i=0; i<100; i++) {
-			for(int j=0; j<100; j++) {
-				if (nums.get(i).get(j) > 0) sum++;
-			}
-		}
-		
-		System.out.println(sum);
-	}
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
+        
+        boolean[][] map = new boolean[100][100];
+        int N = Integer.parseInt(br.readLine());
+        for (int n=0; n<N; n++) {
+        	st = new StringTokenizer(br.readLine());
+        	int c = Integer.parseInt(st.nextToken());
+        	int r = Integer.parseInt(st.nextToken());
+        	for (int i=r; i<r+10; i++) {
+        		for (int j=c; j<c+10; j++) {
+        			map[i][j] = true;
+        		}
+        	}
+        }
+        
+        int cnt = 0;
+        for (int i=0; i<100; i++) {
+    		for (int j=0; j<100; j++) {
+    			if (map[i][j]) cnt++;
+    		}
+    	}
+        
+        System.out.println(cnt);
+        
+    }
 }
