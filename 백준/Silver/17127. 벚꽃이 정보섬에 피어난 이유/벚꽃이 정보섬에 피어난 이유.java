@@ -36,7 +36,7 @@ public class Main {
     		return;
     	}
     	
-    	for (int j=i; j<=N-4+cnt; j++) {
+    	for (int j=i; j<N; j++) {
     		idx[cnt] = j;
     		recur(cnt+1, j+1);
     	}
