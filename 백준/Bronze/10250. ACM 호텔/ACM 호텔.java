@@ -16,11 +16,11 @@ public class Main {
     	for (int t=0; t<T; t++) {
     		st = new StringTokenizer(br.readLine());
     		int H = Integer.parseInt(st.nextToken());
-    		int W = Integer.parseInt(st.nextToken());
+    		Integer.parseInt(st.nextToken());
     		int N = Integer.parseInt(st.nextToken());
     		int x = (N-1)%H + 1;
     		int y = (N-1)/H + 1;
-    		sb.append(x + String.format("%02d", y)).append("\n");
+    		sb.append(x).append(String.format("%02d", y)).append("\n");
     	}
     	System.out.println(sb.toString());
     	
