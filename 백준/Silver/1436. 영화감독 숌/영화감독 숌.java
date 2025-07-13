@@ -24,10 +24,10 @@ public class Main {
     }
     
     public static boolean check(int num) {
-    	char[] chars = String.valueOf(num).toCharArray();
     	int len = 0;
-    	for (char c : chars) {
-    		if (c == '6') {
+    	int cur = num;
+    	while (cur > 0) {
+    		if (cur%10 == 6) {
     			len++;
     			if (len == 3) {
     				return true;
@@ -35,6 +35,7 @@ public class Main {
     		} else {
     			len = 0;
     		}
+    		cur/=10;
     	}
     	return false;
     }
