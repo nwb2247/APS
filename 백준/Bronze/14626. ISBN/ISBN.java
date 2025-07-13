@@ -23,21 +23,21 @@ public class Main {
         		}
     		} 
     	}
-    	int sol = 0;
     	if (idx == 12) {
-    		sol = 10-(sum%10);
-    		if (sol == 10) {
+    		int num = 10-(sum%10);
+    		if (num == 10) {
     			System.out.println(0);
     		} else {
-    			System.out.println(sol);
+    			System.out.println(num);
     		}
     		return;
     	}
     	
     	int c = idx%2==0?1:3;
     	for (int i=0; i<=9; i++) {
-    		if (10 - (sum+c*i)%10 == chars[12]-'0'
-    				|| (10 - (sum+c*i)%10 == 10 && chars[12]-'0' == 0)) {
+    		int num = 10 - (sum+c*i)%10;
+    		if ((num == 10 && chars[12]-'0' == 0)
+    				|| num == chars[12]-'0') {
     			System.out.println(i);
     			break;
     		}
