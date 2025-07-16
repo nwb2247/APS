@@ -1,8 +1,3 @@
-import sys
-
-input = sys.stdin.readline
-print = sys.stdout.write
-
-a, b = map(int, input().split())
-
-print(str(a+b))
+a = input()
+l = a.split()
+print(int(l[0]) + int(l[1]))
