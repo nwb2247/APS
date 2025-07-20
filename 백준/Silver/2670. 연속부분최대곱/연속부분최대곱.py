@@ -8,5 +8,5 @@ sol = cur
 for f in arr[1:] :
     cur = max(cur*f, f)
     sol = max(sol, cur)
-print("%.3f" % sol)
+print(f"{sol:.3f}")
 
