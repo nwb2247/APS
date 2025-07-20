@@ -18,7 +18,7 @@ for _ in range(M) :
             arr[j] = not arr[j]
 m = N//20
 i = 0
-while i != m :
-    print(*map(int, arr[i*20+1:(i+1)*20+1]))
-    i += 1
-print(*map(int, arr[i*20+1:]))
+for i in range(1, N+1) :
+    print(int(arr[i]), end=" ")
+    if i%20 == 0 :
+        print()
