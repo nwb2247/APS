@@ -4,7 +4,7 @@
 
 ### 성능 요약
 
-메모리: 11912 KB, 시간: 76 ms
+메모리: 110760 KB, 시간: 104 ms
 
 ### 분류
 
@@ -12,7 +12,7 @@
 
 ### 제출 일자
 
-2025년 4월 2일 11:45:34
+2025년 7월 23일 19:27:35
 
 ### 문제 설명
 
@@ -28,7 +28,7 @@
 
 <p>아래 그림은 이 문제의 예제를 나타낸 것이다.</p>
 
-<p style="text-align: center;"><img alt="" src="" style="width: 284px; height: 50px;"></p>
+<p style="text-align: center;"><img alt="" src="https://upload.acmicpc.net/6807aea1-d6c6-4ab4-9850-baf9d53859a1/-/preview/" style="width: 284px; height: 50px;"></p>
 
 <p>가장 많은 케이크 조각을 받을 것으로 기대한 방청객의 번호와 실제로 가장 많은 케이크 조각을 받는 방청객의 번호를 구하는 프로그램을 작성하시오.</p>
 
