@@ -1,12 +1,13 @@
-import sys
+N = int(input())
 
-N = int(sys.stdin.readline())
-arr = [float(sys.stdin.readline()) for _ in range(N)]
+lst = [float(input()) for _ in range(N)]
 
-cur = arr[0]
-sol = cur
-for f in arr[1:] :
-    cur = max(cur*f, f)
-    sol = max(sol, cur)
-print(f"{sol:.3f}")
-
+mx = lst[0]
+cur = mx
+for f in lst[1:] :
+    if f > cur*f :
+        cur = f
+    else :
+        cur *= f
+    mx = max(mx, cur)
+print(f"{mx:.3f}")
