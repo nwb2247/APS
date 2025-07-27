@@ -1,4 +1,5 @@
-import heapq
+import heapq, sys
+input = sys.stdin.readline
 hq = []
 N = int(input())
 for _ in range(N):
