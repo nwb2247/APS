@@ -1,10 +1,7 @@
 from collections import deque
+import sys
 
-fs = [lambda x: (x*2)%10000,
-      lambda x: (x+9999)%10000,
-      lambda x: (x%1000)*10 + x//1000,
-      lambda x: x//10 + (x%10)*1000]
-
+fs = [[(x*2)%10000, (x+9999)%10000, (x%1000)*10 + x//1000, x//10 + (x%10)*1000] for x in range(10000)]
 cs = ["D", "S", "L", "R"]
 
 TC = int(input())
@@ -23,7 +20,8 @@ for _ in range(TC):
         if visited[val]:
             continue
         visited[val] = True
-        for i, f in enumerate(fs):
-            nval = f(val)
+        for i, nval in enumerate(fs[val]):
+            if visited[nval]:
+                continue
             q.append((nval, path + cs[i]))
-    print(ans)
+    print("".join(ans))
