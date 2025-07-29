@@ -4,15 +4,15 @@
 
 ### 성능 요약
 
-메모리: 11928 KB, 시간: 76 ms
+메모리: 129136 KB, 시간: 128 ms
 
 ### 분류
 
-너비 우선 탐색, 깊이 우선 탐색, 그래프 이론, 그래프 탐색
+그래프 이론, 그래프 탐색, 너비 우선 탐색, 깊이 우선 탐색, 플러드 필
 
 ### 제출 일자
 
-2025년 7월 7일 21:45:23
+2025년 7월 29일 18:28:02
 
 ### 문제 설명
 
@@ -20,7 +20,7 @@
 
 <p>예를 들어 M=5, N=7 인 모눈종이 위에 <그림 1>과 같이 직사각형 3개를 그렸다면, 그 나머지 영역은 <그림 2>와 같이 3개의 분리된 영역으로 나누어지게 된다.</p>
 
-<p style="text-align: center;"><img alt="" src="" style="height:224px; width:589px"></p>
+<p style="text-align: center;"><img alt="" src="https://www.acmicpc.net/upload/images/zzJD2aQyF5Rm4IlOt.png" style="height:224px; width:589px"></p>
 
 <p><그림 2>와 같이 분리된 세 영역의 넓이는 각각 1, 7, 13이 된다.</p>
 
