@@ -1,24 +1,25 @@
 N = None
 M = None
 
+# 메모리 초과, 재귀 깊이 초과로 인해 stk을 이용한 dfs로 풀었음
 
 def dfs(pos, arr, visited):  # stk과 loop를 이용한 dfs
     cr, cc = pos
-    stk = []
+    stk = []        # 더 이상 방문하지 않은 정점이 없을 때 돌아갈 직전 분기
     while True:
-        for dr, dc in [[1, 0], [-1, 0], [0, 1], [0, -1]]:
+        for dr, dc in [[1, 0], [-1, 0], [0, 1], [0, -1]]:       # 인접한 칸에 대해
             nr, nc = cr + dr, cc + dc
             if 0 <= nr < N and 0 <= nc < M:
-                if arr[nr][nc] == 1 and not visited[nr][nc]:
-                    stk.append((cr, cc))
-                    visited[nr][nc] = True
+                if arr[nr][nc] == 1 and not visited[nr][nc]:    # 1이고 방문한 적 없다면
+                    stk.append((cr, cc))                        # 원래 것을 스택에 넣고
+                    visited[nr][nc] = True                      # nr, nc를 방문처리하고 cr, cc에 대입
                     cr, cc = nr, nc
                     break
-        else:
-            if len(stk) == 0:
+        else:                                                   # 모든 인접 정점을 방문한 상태라면
+            if len(stk) == 0:                                   # 스택이 비어 있다면 dfs 완료된 것이므로 while문 탈출
                 break
             else:
-                cr, cc = stk.pop()
+                cr, cc = stk.pop()                              # 스택에 남아있는 것이 있다면 tos를 cr, cc로
 
 def solve():
     global N, M
@@ -44,7 +45,7 @@ def solve():
     for sr in range(N):
         for sc in range(M):
             if arr[sr][sc] == 1 and not visited[sr][sc]:
-                dfs((sr, sc), arr, visited)
+                dfs((sr, sc), arr, visited)       # dfs를 이용해 같은 객체인지 확인
                 cnt += 1
 
     print(cnt)
