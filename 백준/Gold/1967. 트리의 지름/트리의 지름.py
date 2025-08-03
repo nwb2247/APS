@@ -2,6 +2,7 @@
 [조건]
 노드 수 N 최대 10000
 루트 노드와 자식 노드 관계 순차적으로 주어짐
+1~N으로 번호 매겨짐
 
 [목표]
 최대 지름 길이 구하기
@@ -9,8 +10,8 @@
 [접근]
 BFS 등 O(N^2) 알고리즘 시간 초과
 대신 재귀를 이용해 각 간선을 타고 올라오면서 최대값을 갱신해주자
-부모, 자식 default dict로 관리
-
+부모, 자식 default dict로 관리? XXXX
+1~N으로 주어져있으므로 리스트로 받자 (문제 잘읽기..)
 
 [주의사항]
 => 이진 트리가 아닐 수 있다.
@@ -78,11 +79,15 @@ def recur(cur):
 
 
 N = int(input())
-parent = defaultdict(tuple)    # 부모 노드와 거리를 같이 저장
-children = defaultdict(list)      # 부모 노드 번호만 저장
-"""
-defaultdict : 기본값을 지정, 인덱싱방식으로 없는 키의 값을 가져오려하면 빈리스트를 생성해줌
-"""
+
+parent = [(0,0)]*(N+1)
+children = [[] for _ in range(N+1)]
+#
+# parent = defaultdict(tuple)    # 부모 노드와 거리를 같이 저장
+# children = defaultdict(list)      # 부모 노드 번호만 저장
+# """
+# defaultdict : 기본값을 지정, 인덱싱방식으로 없는 키의 값을 가져오려하면 빈리스트를 생성해줌
+# """
 
 # 꿀팁 : 전역 변수는 한글자보다는 다소 번거롭게 지어야, 함수 내부에서 엉뚱하게 가져오는 실수를 줄일 수 있다.
 for _ in range(N-1):
