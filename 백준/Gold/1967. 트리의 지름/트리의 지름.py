@@ -47,6 +47,8 @@ for c in children[cur]:
 from collections import defaultdict
 import sys
 
+input = sys.stdin.readline
+
 sys.setrecursionlimit(20000)
 
 def recur(cur):
