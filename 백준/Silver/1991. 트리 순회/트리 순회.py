@@ -1,50 +1,52 @@
 def preorder(cur):
-    lc = children[cur][0]
-    rc = children[cur][1]
-    pre_ans.append(chr(cur + ord("A")-1))
-    if lc != 0:
-        preorder(lc)
-    if rc != 0:
-        preorder(rc)
-
+    global ans_pre
+    if cur == -1:
+        return
+    ans_pre += to_char(cur)
+    preorder(left[cur])
+    preorder(right[cur])
 
 def inorder(cur):
-    lc = children[cur][0]
-    rc = children[cur][1]
-    if lc != 0:
-        inorder(lc)
-    in_ans.append(chr(cur + ord("A")-1))
-    if rc != 0:
-        inorder(rc)
-
+    global ans_in
+    if cur == -1:
+        return
+    inorder(left[cur])
+    ans_in += to_char(cur)
+    inorder(right[cur])
 
 def postorder(cur):
-    lc = children[cur][0]
-    rc = children[cur][1]
-    if lc != 0:
-        postorder(lc)
-    if rc != 0:
-        postorder(rc)
-    post_ans.append(chr(cur + ord("A")-1))
+    global ans_post
+    if cur == -1:
+        return
+    postorder(left[cur])
+    postorder(right[cur])
+    ans_post += to_char(cur)
 
+
+def to_int(char):
+    return ord(char)-ord("A")
+
+def to_char(num):
+    return chr(num+ord("A"))
 
 N = int(input())
-children = [[0,0] for _ in range(N+1)]
-pre_ans = []
-in_ans = []
-post_ans = []
-
+left = [-1]*26
+right = [-1]*26
 for _ in range(N):
-    pp, ll, rr = map(lambda x: ord(x)-ord("A")+1 if x!="." else 0, input().split())
-    children[pp][0] = ll
-    children[pp][1] = rr
+    tlst = list(input().split())
+    p = to_int(tlst[0])
+    if tlst[1] != ".":
+        left[p] = to_int(tlst[1])
+    if tlst[2] != ".":
+        right[p] = to_int(tlst[2])
 
-preorder(1)
-inorder(1)
-postorder(1)
-print("".join(pre_ans))
-print("".join(in_ans))
-print("".join(post_ans))
-
-
+ans_pre = ""
+ans_in = ""
+ans_post = ""
+preorder(0)
+inorder(0)
+postorder(0)
+print(ans_pre)
+print(ans_in)
+print(ans_post)
 
