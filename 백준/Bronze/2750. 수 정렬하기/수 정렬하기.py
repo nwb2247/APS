@@ -1,3 +1,5 @@
+# while문을 이용해 빈 리스트 조건으로 탈출하고 이어붙이는 방식
+
 def merge_sort(l):
     if len(l) <= 1:
         return l
@@ -7,28 +9,59 @@ def merge_sort(l):
     right = merge_sort(l[len(l)//2:])
 
     # 정렬된 양쪽의 결과를 합쳐줌
-    li, ri = 0, 0   # 왼쪽 인덱스 오른쪽 인덱스 초기화
-    ret = [0]*len(l)
-    for i in range(len(l)):
-        if li >= len(left):     # 왼쪽 리스트 다썼다면
-            ret[i] = right[ri]
-            ri += 1
-        elif ri >= len(right):  # 오른쪽 리스트 다썼다면
-            ret[i] = left[li]
+    li, ri = 0, 0   # 왼쪽 인덱스 / 오른쪽 인덱스 / 새로운 인덱스 초기화
+    ret = []
+    
+    while li < len(left) and ri < len(right):
+        if left[li] < right[ri]:
+            ret.append(left[li])
             li += 1
-        else:                   # 둘다 남아있다면 작은 것을
-            if left[li] < right[ri]:
-                ret[i] = left[li]
-                li += 1
-            else:
-                ret[i] = right[ri]
-                ri += 1
-    return ret
+        else:
+            ret.append(right[ri])
+            ri += 1
+
+    return ret + left[li:] + right[ri:] # 지금까지 만든 ret + 남아있는 쪽 이어 붙이기
+    # 비어있는건 붙여도 변화 없으므로 ok, 슬라이싱은 유효한 인덱스 내 결과만 반환
 
 N = int(input())
 lst = [int(input()) for _ in range(N)]
 
 print(*merge_sort(lst), sep="\n")
+
+# --------------------------------------------------------
+
+# def merge_sort(l):
+#     if len(l) <= 1:
+#         return l
+#
+#     # 반으로 나누고 병합 정렬
+#     left = merge_sort(l[:len(l)//2])
+#     right = merge_sort(l[len(l)//2:])
+#
+#     # 정렬된 양쪽의 결과를 합쳐줌
+#     li, ri = 0, 0   # 왼쪽 인덱스 오른쪽 인덱스 초기화
+#     ret = [0]*len(l)
+#     for i in range(len(l)):
+#         if li >= len(left):     # 왼쪽 리스트 다썼다면
+#             ret[i] = right[ri]
+#             ri += 1
+#         elif ri >= len(right):  # 오른쪽 리스트 다썼다면
+#             ret[i] = left[li]
+#             li += 1
+#         else:                   # 둘다 남아있다면 작은 것을
+#             if left[li] < right[ri]:
+#                 ret[i] = left[li]
+#                 li += 1
+#             else:
+#                 ret[i] = right[ri]
+#                 ri += 1
+#     return ret
+# N = int(input())
+# lst = [int(input()) for _ in range(N)]
+#
+# print(*merge_sort(lst), sep="\n")
+
+# --------------------------------------------------------
 
 # # 배열 인덱스를 이용한 퀵소트
 # def qsort(start, end): # 시작인덱스, 마지막인덱스
@@ -64,7 +97,7 @@ print(*merge_sort(lst), sep="\n")
 # qsort(0, N-1)
 # print(*lst, sep="\n")
 
-
+# --------------------------------------------------------
 
 # # 리스트를 이용한 퀵소트
 # def qsort(l):
