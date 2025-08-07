@@ -1,10 +1,3 @@
-import sys
-
-input = sys.stdin.readline
-
-N = int(input())
-lst = [int(input()) for _ in range(N)]
-
 # 배열 인덱스를 이용한 퀵소트
 def qsort(start, end): # 시작인덱스, 마지막인덱스
     if end-start <= 0: # 종료 조건 비어있거나 하나만 있다면 -> 이미 정렬 (비어있는 경우는 end<start)
@@ -14,23 +7,28 @@ def qsort(start, end): # 시작인덱스, 마지막인덱스
     left = start+1
     right = end
     while left<right: # 다른 동안 진행, 즉 left == right 되면 종료
-        if lst[left] < pivot:
+        if lst[left] <= pivot:      # (D) 같은 수가 올 수 있으므로
             left += 1
-        elif lst[right] > pivot:
+        elif lst[right] >= pivot:   # (D) 같은 수가 올 수 있으므로
             right -= 1
         else :
+        # lst[left]는 pivot보다 크고, lst[right]는 pivot 보다 작은 상태라 바꿀 준비가 되었다면
             lst[left], lst[right] = lst[right], lst[left]
+
+    # lst[left]가 pivot보다 크다면, lst[left-1]가 pivot보다 작거나 같은 상태이므로 pivot과 자리를 바꿀 수 있음
     if lst[left] > pivot:
         lst[left-1], lst[start] = lst[start], lst[left-1]
-        qsort(start, left-2)
+        qsort(start, left-2) # pivot이 left-1로 이동했으므로 왼쪽은 start~left-2 오른쪽은 left~end
         qsort(left, end)
+    # lst[left]가 pivot보다 작거나 같다면, 바로 pivot과 자리를 바꿀 수 있음
     else:
         lst[left], lst[start] = lst[start], lst[left]
-        qsort(start, left-1)
+        qsort(start, left-1) # pivot이 left로 이동했으므로 왼쪽은 start~left-1 오른쪽은 left+!~end
         qsort(left+1, end)
 
 
-
+N = int(input())
+lst = [int(input()) for _ in range(N)]
 qsort(0, N-1)
 print(*lst, sep="\n")
 
