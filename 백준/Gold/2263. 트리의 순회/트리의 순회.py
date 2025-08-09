@@ -19,16 +19,12 @@ sys.setrecursionlimit(110000)
 
 
 def preo(ino_s, ino_e, posto_s, posto_e):
-    if ino_s == ino_e:
-        ans.append(ino[ino_s])
-        return
-    elif ino_s > ino_e:
+
+    if ino_s > ino_e:
         return
 
     p = posto[posto_e]
-    for ino_pi in range(ino_s, ino_e+1):
-        if ino[ino_pi] == p:
-            break
+    ino_pi = ino_idx[p]
     # 주의 : [ino_s:ino_e+1]에서만 찾지 않으면 시간 터짐
 
     offset = (ino_pi - 1) - ino_s
@@ -41,6 +37,9 @@ ans = []
 N = int(input())
 ino = list(map(int, input().split()))
 posto = list(map(int, input().split()))
+ino_idx = [0]*(N+1)
+for i, num in enumerate(ino):
+    ino_idx[num] = i
 
 preo(0, N - 1, 0, N - 1)
 print(*ans)
