@@ -31,32 +31,16 @@ def preo(ino_s, ino_e, posto_s, posto_e):
             break
     # 주의 : [ino_s:ino_e+1]에서만 찾지 않으면 시간 터짐
 
-    left_ino_s = ino_s
-    left_ino_e = ino_pi - 1
-    left_posto_s = posto_s
-    left_posto_e = posto_s + (left_ino_e - left_ino_s)
-
-    right_ino_s = left_ino_e + 2
-    right_ino_e = ino_e
-    right_posto_s = left_posto_e + 1
-    right_posto_e = posto_e - 1
-
+    offset = (ino_pi - 1) - ino_s
     ans.append(p)
-
-    # print(ans)
-    preo(left_ino_s, left_ino_e, left_posto_s, left_posto_e)
-    preo(right_ino_s, right_ino_e, right_posto_s, right_posto_e)
-
-
-
+    preo(ino_s, ino_s + offset, posto_s, posto_s + offset)
+    preo(ino_s + offset + 2, ino_e, posto_s + offset + 1, posto_e - 1)
 
 
 ans = []
 N = int(input())
-# N = 100000
 ino = list(map(int, input().split()))
-# ino = list(range(1, N+1))
 posto = list(map(int, input().split()))
-# posto = list(range(N, -1, -1))
+
 preo(0, N - 1, 0, N - 1)
 print(*ans)
