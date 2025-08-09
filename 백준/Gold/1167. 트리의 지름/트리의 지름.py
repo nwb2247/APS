@@ -11,28 +11,33 @@
 [아이디어]
 
 임의의 번호 (1 or V//2 등)을 루트로 삼고, visited 하면서 내려감 (이미 방문한 것은 부모라는 뜻)
-나머지는 자식들 (이진 트리 아닐 수 있으므로 자식 여럿일 수 있음)
+나머지는 자식들 (이진 트리 아닐 수 있으므로 자식 2개 이상일 수 있음)
 
-자식이 없을 때까지 내려 갔다가 올라오면서 최대, 차대의 합으로 ans 갱신해주고
-최대를 return
+자식이 없을 때까지 내려 갔다가 올라오면서
+첫번째로 큰값, 두번째로 큰값 의 합으로 ans 갱신해주고 (현재 정점이 LCA인 경로의 길이)
+첫번째로 큰값를 return (조상 정점이 LCA가 되는 경로의 경우를 위해)
 """
 import sys
 sys.setrecursionlimit(110000)
 
 def dfs(cur):
     global ans
+
     # 종료조건 : 자식이 없다면
     if remain[cur] == 0:
         return 0
 
     mx1 = 0     # 최대
     mx2 = 0     # 차대
-    for nxt, w in adj[cur]:
-        if visited[nxt] == 0:
-            visited[nxt] = 1
-            length = dfs(nxt) + w
-            if length >= mx1:
-                mx2 = mx1
+    for nxt, w in adj[cur]:     # 인접한 정점들에 대해서
+        if visited[nxt] == 0:   # 방문하지 않은 정점, 즉 자식이라면
+            visited[nxt] = 1    # 방문 처리,
+            remain[nxt] -= 1    
+            # 부모 cur에게서 자식 nxt로 갔으므로 nxt기준 남아있는 정점 -1 해줌
+            # 이때 remain[nxt]가 1이었다면(부모만 있었다면) -1해주면 0이 되므로 종료조건이 됨
+            length = dfs(nxt) + w   # nxt로 부터 올라온 경로의 최대값에 cur과 nxt의 거리도 더해줌
+            if length >= mx1:       # 첫번째로 큰값, 두번째로 큰 값을 찾음
+                mx2 = mx1           # "크거나 같다면" (> 아님에 주의)
                 mx1 = length
             elif length >= mx2:
                 mx2 = length
