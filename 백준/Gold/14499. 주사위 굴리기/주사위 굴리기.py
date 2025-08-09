@@ -13,7 +13,8 @@ def oob(r, c):
     return not (0 <= r < N and 0 <= c < M)
 
 def roll(op):
-    global dice, cr, cc
+    global dice, cr, cc            
+    # dice = new_dice로 참조를 아예 바꿀거면 dice로 global 키워드 붙여야함
     ground, north, east, west, south, sky = dice
     new_ground, new_north, new_east, new_west, new_south, new_sky = dice
 
