@@ -1,0 +1,111 @@
+"""
+
+최단 경로 : bfs
+
+1차 시도
+    => 모든 벽을 하나씩 깬 상태에서 bfs (시간초과 가능성 있음)
+    => 시간초과
+
+2차 시도
+    => 0와 붙어있는 1만을 부수길 고려한다면?
+    => 시간초과
+
+3차 시도
+    => 시작점에서 출발해서 닿게 되는 벽(1)만 고려한다면? (bfs)
+    => 시간초과
+
+4차 시도
+    => 시작점, 출발점 모두에서 닿게 되는 벽만을 고려
+    => 시간초과
+
+5차 시도
+    => 시작점, 출발점에서 각각 돌리고, 벽 하나씩 부수면서 연결된 부분에서 합쳐줌
+
+
+
+"""
+from collections import deque
+
+ds = [(1,0),(-1,0),(0,1),(0,-1)]
+
+def bfs(sr, sc, er, ec, visited):
+    global ans
+    q = deque()
+
+    visited[sr][sc] = 1       # 시작칸도 셈
+    q.append((sr, sc))
+
+    while q:
+        cr, cc = q.popleft()
+
+        if (cr, cc) == (er, ec):
+            break
+
+        for dr, dc in ds:
+            nr, nc = cr+dr, cc+dc
+            if 0<=nr<N and 0<=nc<M and arr[nr][nc] == 0 and visited[nr][nc] == -1:
+                visited[nr][nc] = visited[cr][cc] + 1
+                q.append((nr, nc))
+
+    return visited[er][ec]
+
+
+
+N, M = map(int, input().split())
+arr = [list(map(int, input())) for _ in range(N)]
+INF = N*M + 1
+ans = INF
+
+visited_s = [[-1]*M for _ in range(N)]
+ret = bfs(0, 0, N-1, M-1, visited_s)
+if ret != -1:
+    ans = min(ans, ret)
+
+walls = []
+for zr in range(N):
+    for zc in range(M):
+        if arr[zr][zc] == 1:
+            for dr, dc in ds:
+                nzr, nzc = zr+dr, zc+dc
+                if 0<=nzr<N and 0<=nzc<M and visited_s[nzr][nzc] != -1:
+                    walls.append((zr, zc))
+                    break
+
+visited_e = [[-1]*M for _ in range(N)]
+ret = bfs(N-1, M-1, 0, 0, visited_e)
+if ret != -1:
+    ans = min(ans, ret)
+
+new_walls = []
+for wr, wc in walls:
+    for dr, dc in ds:
+        nwr, nwc = wr + dr, wc + dc
+        if 0 <= nwr < N and 0 <= nwc < M and visited_e[nwr][nwc] != -1:
+            new_walls.append((wr, wc))
+            break
+walls = new_walls
+
+# print(walls)
+# for lst in visited_s:
+#     print(lst)
+# print()
+# for lst in visited_e:
+#     print(lst)
+
+for wr, wc in walls:
+    mn_s = INF
+    mn_e = INF
+    for dr, dc in ds:
+        nr, nc = wr+dr, wc+dc
+        if 0<=nr<N and 0<=nc<M:
+            if visited_s[nr][nc] != -1:
+                mn_s = min(mn_s, visited_s[nr][nc])
+            if visited_e[nr][nc] != -1:
+                mn_e = min(mn_e, visited_e[nr][nc])
+    # print(mn_s, mn_e)
+    ans = min(ans, mn_s + 1 + mn_e)
+
+if ans != INF:
+    print(ans)
+else:
+    print(-1)
