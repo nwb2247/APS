@@ -5,9 +5,9 @@ DP :
 """
 
 N = int(input())
-
 DP = [N]*(N+1)
 DP[1] = 0
+
 # 바텀업
 for i in range(2, N+1):
     if i%3 == 0:
@@ -17,3 +17,19 @@ for i in range(2, N+1):
     DP[i] = min(DP[i], DP[i-1] + 1)
 
 print(DP[N])
+
+# 탑다운
+# import sys
+# sys.setrecursionlimit(110000)
+#
+# def recur(i):
+#     if DP[i] == N:
+#         ret = recur(i-1)+1
+#         if i%2 == 0:
+#             ret = min(ret, recur(i//2) + 1)
+#         if i%3 == 0:
+#             ret = min(ret, recur(i//3) + 1)
+#         DP[i] = ret
+#     return DP[i]
+#
+# print(recur(N))
