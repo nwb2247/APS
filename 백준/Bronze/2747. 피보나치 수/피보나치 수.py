@@ -10,14 +10,14 @@ DP[0] = 0
 DP[1] = 1
 
 # 바텀업
-# for i in range(2, N+1):
-#     DP[i] = DP[i-1] + DP[i-2]
-# print(DP[N])
+for i in range(2, N+1):
+    DP[i] = DP[i-1] + DP[i-2]
+print(DP[N])
 
 # 탑다운
-def fibo(i):
-    if DP[i] == -1:
-        DP[i] = fibo(i-1)+fibo(i-2)
-    return DP[i]
-print(fibo(N))
+# def fibo(i):
+#     if DP[i] == -1:
+#         DP[i] = fibo(i-1)+fibo(i-2)
+#     return DP[i]
+# print(fibo(N))
 
