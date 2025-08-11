@@ -4,7 +4,7 @@
 
 ### 성능 요약
 
-메모리: 14364 KB, 시간: 112 ms
+메모리: 108384 KB, 시간: 88 ms
 
 ### 분류
 
@@ -12,7 +12,7 @@
 
 ### 제출 일자
 
-2025년 2월 2일 15:04:17
+2025년 8월 11일 13:37:13
 
 ### 문제 설명
 
@@ -20,7 +20,7 @@
 
 <p>아래 그림은 2×17 직사각형을 채운 한가지 예이다.</p>
 
-<p style="text-align: center;"><img alt="" src="" style="height:59px; width:380px"></p>
+<p style="text-align: center;"><img alt="" src="https://www.acmicpc.net/upload/images/t2n2122.gif" style="height:59px; width:380px"></p>
 
 ### 입력 
 
