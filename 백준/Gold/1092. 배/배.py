@@ -15,44 +15,36 @@
 -1출력
 
 [접근]
+최단 시간에 처리하기 위해 평평하게 넣되, 될 수 있으면 무게제한이 가장 큰 크레인에 넣는다.
+
 크레인 무게제한 오름차순 정렬
 박스 내림차순 정렬
-박스에서 하나씩 꺼내서 넣을 수 있는 크레인 찾기, 다음 크레인보다 len이 적으면 넣고, 같으면 다음크레인으로 넘김
-(크레인의 개수가 박스 수보다 더 적으므로 이방법 수행)
-
-가장 큰 크레인을 우선순위로 하지만, loaded를 최대한 일정하게끔함
-=> 넣을 수 있는 딱 맞는 크레인이 넣되, 이미 지금 크레인과 다음 크레인 (더 큰) 크레인의 높이가 같다면 다음 크레인으로 넘김
+박스에서 큰거부터 하나씩 꺼내서 넣을 수 있는 크레인 찾기, 다음 크레과 대기열 길이가 같다면, 되도록 더 큰 크레인에 넣음
+=> 대기열의 길이를 최대한 균일하게 유지하면서, 넣을 수 있는 가장 큰 크레인에 넣기
 """
 def solve():
     N = int(input())
-    climit = list(map(int, input().split()))
-    climit.sort()
-    climit = climit
+    climit = list(map(int, input().split()))    # 크레인 무게제한 리스트
+    climit.sort()                               # 오름차순 정렬 (작은 것부터 넣기 시도)
 
-    M = int(input())
+    M = int(input())                            # 박스의 수
     boxes = list(map(int, input().split()))
-    boxes.sort(reverse=True)
+    boxes.sort(reverse=True)                    # 박스는 내림차순 정렬 (큰 것부터 넣기 위해)
 
+    loaded = [0]*N + [10001]                    # 크레인 별 대기열 (몇개를 쌓아두는지)
 
-
-    loaded = [0]*N + [10001]
-
-    for box in boxes:
-
-        for i in range(N):  # i 크레인 인덱스
+    for box in boxes:                           # 큰 박스부터 꺼내서
+        for i in range(N):                      # 무게 제한 작은 크레인부터 커지는 순으로 확인해서 넣을 수 있는 가장 큰 크레인에 넣음
             if box > climit[i] or loaded[i+1] == loaded[i]:
+                # [1] 박스 크기가 무게제한을 넘어가면 못 넣으므로 continue
+                # [2] 다음 크레인의 대기열 크기가 현재 크레인과 같다면 더 큰 크레인에 우선적으로 넣어야하므로 continue
                 continue
             else:
-                loaded[i] += 1
+                loaded[i] += 1  # 넣을 수 있는 크레인에 도달했다면 +=1
                 break
-
-
-        else:   # 어디에도 넣을 수 없으면 break
+        else:   # 어디에도 넣을 수 없으면 break (즉, 가장 무게제한이 가장 큰 크레인에도 넣을 수 없다면)
             return -1
 
-    # print(climit)
-    # print(boxes)
-    # print(loaded)
-    return loaded[N-1]
+    return loaded[N-1]      # 항상 더 큰 크레인에 우선적으로 넣었으므로 마지막 크레인의 대기열이 가장 큼
 
 print(solve())
