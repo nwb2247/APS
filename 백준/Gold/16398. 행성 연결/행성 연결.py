@@ -13,7 +13,7 @@ def find(x):
     return parent[x]
 
 def union(x, y):
-    parent[find(x)] = find(y)
+    parent[find(y)] = find(x)
 
 N = int(input())
 cost = [list(map(int, input().split())) for _ in range(N)]
