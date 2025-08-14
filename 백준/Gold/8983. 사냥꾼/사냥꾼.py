@@ -9,30 +9,26 @@ M*N 시간 초과
 투포인터
 """
 
-def possible():
-    return (abs(sade[s]-animals[a][0]) + animals[a][1]) <= L
 
 M, N, L = map(int, input().split()) # M사대 N동물
 sade = list(map(int, input().split()))
 sade.sort()
 animals = [tuple(map(int, input().split())) for _ in range(N)]
-animals.sort(key=lambda x: x[0])
+animals.sort(key=lambda x: (x[0]+x[1], x[0]-x[1]))
+
+# print(animals)
 
 s = 0
 a = 0
 
 cnt = 0
 while s<M and a<N:
-    # print(animals[a], sade[s], possible())
-    if possible():
+    if (abs(sade[s]-animals[a][0]) + animals[a][1]) <= L:
+        a += 1
         cnt += 1
+    elif animals[a][1] > L or animals[a][0] < sade[s]:
         a += 1
     else:
-        if animals[a][1] > L:
-            a += 1
-        elif animals[a][0] > sade[s]:
-            s += 1
-        else:
-            a += 1
+        s += 1
 
 print(cnt)
