@@ -28,34 +28,80 @@ dist = [float('inf')]*(N+1)     # S에서 다른 모든 정점과의 거리
 dist[S] = 0
 
 # -------------------------------------------------------------------------------------------------------------
-
-# 우선순위를 이용한 다익스트라
+# 간소화한 다익스트라 (confirmed 배열 대신 dist로 확정과 거리 기록 기능을 모두 수행) (주석 제거 ver)
 from heapq import heappop, heappush
 pq = []
 heappush(pq, (0, S))
 
 while pq:
 
-    # [1] 확정되지 않은 정점 중 가장 S와의 거리가 가장 짧은 정점 cur 선택  (이번에 확정될)
-    _, cur = heappop(pq)
-    if confirmed[cur] == 1:
+    curdist, cur = heappop(pq)
+    if curdist != dist[cur] :
         continue
-        # 이미 확정되었다면 건너뜀
-        # (pq를 사용하면 dist의 갱신이 이뤄질때마다 우선순위큐에 들어가므로 여러 개가 들어갈 수 있고, 확정 후에도 남아 있을 수 있음)
-
-    # [2] 지금 꺼낸 것이 S와의 거리가 가장 짧은 것이므로 dist[cur]이 S->cur의 최단거리임이 확정됨 (그리디)
-    confirmed[cur] = 1
 
     if cur == E: # 도착정점을 찾았다면 break
         break
 
-    # [3] 선택한 것과 인접한 정점들에 대해서 기존보다 S에 더 짧게 도달할 수 있는 것이 있다면 dist에 갱신해줌
     for w, nxt in adj[cur]:
-        if confirmed[nxt] == 0 and dist[cur] + w < dist[nxt]: # 아직 확정되지 않았고, cur을 경유함으로써 더 짧은 거리가 가능해졌다면
-            dist[nxt] = dist[cur] + w       # 갱신하고 pq에 넣어줌
+        if dist[cur] + w < dist[nxt]:
+            dist[nxt] = dist[cur] + w
             heappush(pq, (dist[nxt], nxt))
 
 print(dist[E])
+
+
+# while pq: (주석 있는 ver)
+#
+#     # [1] 확정되지 않은 정점 중 가장 S와의 거리가 가장 짧은 정점 cur 선택  (이번에 확정될)
+#     curdist, cur = heappop(pq)
+#     if curdist != dist[cur] : # curdist가 dist[cur] 다르다는 것은(더 큼) 이전에 더 작은 거리 (dist[cur])이 나와서 이미 확정이 된 상태라는 뜻, 더이상 진행하지 않아도 됨
+#         continue
+#         # (pq를 사용하면 dist의 갱신이 이뤄질때마다 우선순위큐에 들어가므로 여러 개가 들어갈 수 있고, 확정 후에도 남아 있을 수 있음)
+#     # [2] 지금 꺼낸 것이 S와의 거리가 가장 짧은 것이므로 dist[cur]이 S->cur의 최단거리임이 확정됨 (그리디)
+#     #   => 이미 append할 때 dist[cur]에 최단 거리가 반영되어있으므로 별도 처리 불필요
+#
+#     if cur == E: # 도착정점을 찾았다면 break
+#         break
+#
+#     # [3] 선택한 것과 인접한 정점들에 대해서 기존보다 S에 더 짧게 도달할 수 있는 것이 있다면 dist에 갱신해줌
+#     for w, nxt in adj[cur]:
+#         if dist[cur] + w < dist[nxt]: # 아직 확정되지 않았고, cur을 경유함으로써 더 짧은 거리가 가능해졌다면
+#             # nxt가 확정되었다면 이미 dist[nxt]가 최단거리이므로 False,
+#             # 확정되지 않았어도 확정을 위해선 dist[nxt]보다 더 짧아지는 경우만 넣으면 됨
+#             dist[nxt] = dist[cur] + w       # 갱신하고 pq에 넣어줌
+#             heappush(pq, (dist[nxt], nxt))
+#
+# print(dist[E])
+
+# -------------------------------------------------------------------------------------------------------------
+
+# # 우선순위를 이용한 다익스트라
+# from heapq import heappop, heappush
+# pq = []
+# heappush(pq, (0, S))
+#
+# while pq:
+#
+#     # [1] 확정되지 않은 정점 중 가장 S와의 거리가 가장 짧은 정점 cur 선택  (이번에 확정될)
+#     _, cur = heappop(pq)
+#     if confirmed[cur] == 1:
+#         continue
+#         # 이미 확정되었다면 건너뜀
+#         # (pq를 사용하면 dist의 갱신이 이뤄질때마다 우선순위큐에 들어가므로 여러 개가 들어갈 수 있고, 확정 후에도 남아 있을 수 있음)
+#
+#     # [2] 지금 꺼낸 것이 S와의 거리가 가장 짧은 것이므로 dist[cur]이 S->cur의 최단거리임이 확정됨 (그리디)
+#     confirmed[cur] = 1
+#
+#     if cur == E: # 도착정점을 찾았다면 break
+#         break
+#
+#     # [3] 선택한 것과 인접한 정점들에 대해서 기존보다 S에 더 짧게 도달할 수 있는 것이 있다면 dist에 갱신해줌
+#     for w, nxt in adj[cur]:
+#         if confirmed[nxt] == 0 and dist[cur] + w < dist[nxt]: # 아직 확정되지 않았고, cur을 경유함으로써 더 짧은 거리가 가능해졌다면
+#             dist[nxt] = dist[cur] + w       # 갱신하고 pq에 넣어줌
+#             heappush(pq, (dist[nxt], nxt))
+#
+# print(dist[E])
 
 # -------------------------------------------------------------------------------------------------------------
 
