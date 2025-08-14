@@ -24,7 +24,7 @@ def op4(arr):
     return [list(lst) for lst in zip(*arr)][::-1]
 
 def separate(arr):
-    R = len(arr)
+    R = len(arr)        # (D) : 배열이 회전하면 행 열 길이 가 바뀔 수 있는데, 생각못하고 N, M을 사용...
     C = len(arr[0])
     return ([lst[:C//2] for lst in arr[:R//2]],
             [lst[C//2:] for lst in arr[:R//2]],
@@ -33,6 +33,7 @@ def separate(arr):
 
 def op5(arr):
     p1, p2, p3, p4 = separate(arr)
+    # (D) : 배열이 회전하면 행 열 길이 가 바뀔 수 있는데, 생각못하고 N, M을 사용...
     return [p4[i] + p1[i] for i in range(len(p1))] + [p3[i] + p2[i] for i in range(len(p1))]
 
 def op6(arr):
