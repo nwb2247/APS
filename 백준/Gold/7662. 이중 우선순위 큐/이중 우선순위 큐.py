@@ -1,72 +1,54 @@
 """
-d = dict()
-...
-d.get(a, default=b)
-d에 key=a가 없는 경우, 원래는 None을 반환
-그러나 default 파라미터를 명시하면 해당 값을 반환
+최소값과 최대값을 둘다 제거 가능
+
+최소 큐, 최대 큐 사용해서
+넣을 때는 둘다 넣어주고, 뺄때는 해당하는 곳에 빼면서
+dict에 넣어 있는지 확인하고 빼주기
+(K <= 1000000이므로 dict ok)
+
+주의 : maxheap -붙이기
 """
 
-import heapq, sys
-input = sys.stdin.readline
+import sys
+from heapq import heappop, heappush
+from collections import defaultdict
 
-TC = int(input())
-for _ in range(TC):
+T = int(sys.stdin.readline())
+for _ in range(T):
+    K = int(sys.stdin.readline())
+    minheap = []
+    maxheap = []
+    dmin = defaultdict(int)
+    dmax = defaultdict(int)
 
-    # 최소힙
-    min_q = []
-    # 최소힙에서 지워졌지만 최대힙에 반영되지 않은 것들
-    min_history = dict()
+    for _ in range(K):
+        cmd, numst = sys.stdin.readline().split()
+        num = int(numst)
+        
+        # 연산
+        if cmd == "I":
+            heappush(minheap, num)
+            heappush(maxheap, -num)
+        else:   # D
+            if num == -1 and minheap:
+                dmax[-heappop(minheap)] += 1
+            elif maxheap: # 1:
+                dmin[-heappop(maxheap)] += 1
 
-    # 최대힙
-    max_q = []
-    # 최대힙에서 지워졌지만 최대힙에 반영되지 않은 것들
-    max_history = dict()
+        # 연산이 끝나면 최소힙, 최대힙에 빼줘야할게 있는지 확인하기
+        while minheap and dmin[minheap[0]] > 0:
+            dmin[heappop(minheap)] -= 1
+        while maxheap and dmax[maxheap[0]] > 0:
+            dmax[heappop(maxheap)] -= 1
 
-    N = int(input())
-    for _ in range(N):
-        st = input().split()
-        # print(st)
-        op = st[0]
-        num = int(st[1])
-        # 삽입 연산인 경우 최대힙 최소힙에 모두 넣어줌
-        if op == "I":
-            heapq.heappush(min_q, num)
-            heapq.heappush(max_q, -num)
-        else:
-            if num == -1:
-                # 최소힙이 비어있지 않고, 최소힙 peek에 있는 값이 최대힙에서 지웠었지만 최소힙엔 아직 반영되지 않은 것이라면...
-                    # get(a, b) : 있으면 dict[a]를 반환, 없으면 b를 반환
-                    # 즉 값이 있는데 0이거나 값이 없어서 0을 반환한다면...
-                while len(min_q) > 0 and max_history.get(min_q[0], 0) != 0:
-                    pop_val = heapq.heappop(min_q)
-                    new_cnt = max_history.get(pop_val) - 1
-                    max_history.update({pop_val: new_cnt})
-                # 위의 while문의 돌렸기 때문에 이제 진짜 최소값을 pop할 수 있다.
-                if len(min_q) > 0:
-                    pop_val = heapq.heappop(min_q)
-                    # 최소힙에서 pop했지만 이는 나중에 최대힙에도 반영해야 하므로 min_history에 기록해둔다.
-                    new_cnt = min_history.get(pop_val, 0) + 1
-                    min_history.update({pop_val: new_cnt})
-            else:
-                while len(max_q) > 0 and min_history.get(-max_q[0], 0) != 0:
-                    pop_val = -heapq.heappop(max_q)
-                    new_cnt = min_history.get(pop_val) - 1
-                    min_history.update({pop_val: new_cnt})
-                if len(max_q) > 0:
-                    pop_val = -heapq.heappop(max_q)
-                    new_cnt = max_history.get(pop_val, 0) + 1
-                    max_history.update({pop_val: new_cnt})
-    # EMPTY여부, 최소 최대 값을 pop하기에 앞서 반영되지 않은 기록이 남아있다면 처리해준다.
-    while len(min_q) > 0 and max_history.get(min_q[0], 0) != 0:
-        pop_val = heapq.heappop(min_q)
-        new_cnt = max_history.get(pop_val) - 1
-        max_history.update({pop_val: new_cnt})
-    while len(max_q) > 0 and min_history.get(-max_q[0], 0) != 0:
-        pop_val = -heapq.heappop(max_q)
-        new_cnt = min_history.get(pop_val) - 1
-        min_history.update({pop_val: new_cnt})
-        # print(max_q, min_q, max_history, min_history)
-    if len(min_q) - sum(max_history.values()) == 0 and len(max_q) - sum(min_history.values()) == 0:
+        # print(cmd, num)
+        # print(dmin)
+        # print(dmax)
+        # print(minheap)
+        # print(maxheap)
+        # print()
+        
+    if not minheap: # minheap이 비었다면 maxheap도 당연하게 비어있음
         print("EMPTY")
     else:
-        print(-max_q[0], min_q[0])
+        print(-maxheap[0], minheap[0]) # 주의 : maxheap엔 - 붙이기
