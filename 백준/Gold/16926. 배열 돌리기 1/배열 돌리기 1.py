@@ -1,42 +1,33 @@
-"""
-N, M <= 300
-R <= 1000
-N*M*R 90_000_000
-
-new_arr에 값 넣으면서, 넣으려는 부분에 값 있으면 방향 전환,
-네 방향 탐색이 끝나면 (cd == 4) sr, sc을 1씩 늘림
-sr, sc에 값이 있으면 종료
-"""
 def oob(r, c):
-    return not (0 <= r < N and 0 <= c < M)
-
-def rotate(arr):
-    new_arr = [[0 for _ in range(M)] for _ in range(N)]
-    sr, sc = 0, 0
-    while new_arr[sr][sc] == 0:
-        cr, cc, cd = sr, sc, 0
-        while cd < 4:
-            dr, dc = DS[cd]
-            nr, nc = cr+dr, cc+dc
-            if oob(nr, nc) or new_arr[nr][nc] != 0:
-                # 범위 밖이거나 이미 채웠다면 방향바꾸고 continue nr, nc를 다시 할당
-                cd += 1
-                continue
-            new_arr[nr][nc] = arr[cr][cc]
-            cr, cc = nr, nc
-        # for l in new_arr:
-        #     print(l)
-        # print()
-        sr += 1
-        sc += 1
-    return new_arr
-
-
+    return not (0<=r<N and 0<=c<M)
 
 N, M, R = map(int, input().split())
-ARR = [list(map(int, input().split())) for _ in range(N)]
-DS = [(1,0), (0,1), (-1,0), (0,-1)] #하우상좌
-for _ in range(R):
-    ARR = rotate(ARR)
-for lst in ARR:
-    print(*lst)
+
+ARR = [list(map(int, input().split())) for _ in range(N)]   # 입력
+NEW_ARR = [[0 for _ in range(M)] for _ in range(N)]         # 정답
+DS = [(1, 0), (0, 1), (-1, 0), (0, -1)] # 하우상좌
+
+er, ec = 0, 0                  # 사이클 최좌상단 (val의 맨마지막에 들어감)
+while NEW_ARR[er][ec] == 0:    # 안채운 곳이 없을때까지
+    val = []    # NEW_ARR에 넣을 값
+    pos = []    # NEW_ARR에 넣을 위치
+    cr, cc, cd = er, ec, 0  # er, ec 다음 것이 가장 먼저 들어가고, er, ec가 가장 늦게 들어감
+    while cd < 4:   # 모든 방향으로 진행할때까지
+        dr, dc = DS[cd]
+        nr, nc = cr+dr, cc+dc
+        if oob(nr, nc) or NEW_ARR[nr][nc] != 0: 
+            # nr, nc가 범위값이거나 이미 채운 곳이라면 반시계방향으로 90도 틀고, nr, nc 다시 구함
+            cd += 1
+            continue
+        val.append(ARR[nr][nc])     # val과 pos 채우기
+        pos.append((nr, nc))
+        cr, cc = nr, nc
+    rotate_num = R % len(val)
+    val = val[-rotate_num:] + val[:-rotate_num]     # R % len(val)만큼 앞으로 회전
+    for i, (nr, nc) in enumerate(pos):
+        NEW_ARR[nr][nc] = val[i]                    # 회전한 것을 반영해 NEW_ARR에 넣어주기
+    er += 1         # er, ec 하나씩 늘려줌
+    ec += 1
+
+for l in NEW_ARR:
+    print(*l)
