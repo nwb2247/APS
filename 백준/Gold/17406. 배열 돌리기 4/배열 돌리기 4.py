@@ -10,7 +10,7 @@ def rotate(R, C, S, arr):
     new_arr = [[x for x in LST] for LST in arr]
     for s in range(1, S + 1):
         cr, cc = R - s, C - s
-        for i in range(4 * (2 * s)):
+        for i in range(4 * (2 * s)): # (D) 2**s가 아닌 2*s (그림으로 그려보고 시작하기)
             dr, dc = DS[i // (2 * s)]
             nr, nc = cr + dr, cc + dc
             new_arr[nr][nc] = arr[cr][cc]
