@@ -39,6 +39,22 @@ ans = []
 found = False
 visited = [0]*L # no_use[i]를 썼는지 안썼는지
 
+def prun_check():
+    if found:
+        return True
+    
+    for g in groups:
+        sm = 0
+        for i in g:
+            if lst[i] == 0:
+                return False
+            sm += lst[i]
+        if sm != 26:
+            return True
+        
+    return False
+    
+
 def check():
     global found, ans
     if found:
@@ -57,7 +73,7 @@ def check():
 def backtrack(depth):
     global found
 
-    if found:
+    if prun_check():
         return
 
     if depth == L:
@@ -72,6 +88,7 @@ def backtrack(depth):
             if found:
                 return
             visited[i] = 0
+            lst[empty[depth]] = 0
 
 backtrack(0)
 output = [chr(num + ord("A") - 1) for num in ans]
