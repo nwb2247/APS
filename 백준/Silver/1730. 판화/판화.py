@@ -6,11 +6,11 @@ crcc와 nrnc 모두 그려줘야함
 """
 
 def oob(r, c):
-    return not (0<=r<N and 0<=c<N)
+    return not (0<=r<N and 0<=c<N)  #(D) <=N로 적어서 틀림
 
 N = int(input())
 OPS = list(input())
-ARR = [["." for _ in range(N)] for _ in range(N)]
+ARR = [["." for _ in range(N)] for _ in range(N)]   
 
 DS = {"D":(1,0), "U":(-1,0), "L":(0,-1), "R":(0,1)}
 
@@ -47,6 +47,6 @@ for op in OPS:
     # print()
 
 for l in ARR:
-    print("".join(l))
+    print("".join(l))   # 출력시 공백 없어야하는데 print(*l)하여 틀림
 
 
