@@ -12,13 +12,17 @@ PR, PC로 주어짐 초기위치
 리팩토링 : 어차피 방향 4개인데 set 쓸필요 없음
 
 """
+import sys
+
+input = sys.stdin.readline
 N, M = map(int, input().split())
 ARR = [list(input()) for _ in range(N)]
 sr, sc = map(int, input().split())
 
 DS = [(-1, 0), (0, 1), (1, 0), (0, -1)]  # URDL
 to_char = ["U", "R", "D", "L"]
-ND = {"/": {0: 1, 1: 0, 2: 3, 3: 2}, "\\": {0: 3, 3: 0, 1: 2, 2: 1}}
+ND = [[1, 0, 3, 2], [3, 2, 1, 0]]
+# ND = {"/": {0: 1, 1: 0, 2: 3, 3: 2}, "\\": {0: 3, 3: 0, 1: 2, 2: 1}}
 
 
 def oob(r, c):
@@ -30,8 +34,9 @@ ans = 0  # 무한 -1 voyager
 ans_d = ""
 for sd in range(4):
     cr, cc, cd = sr - 1, sc - 1, sd  # 그림 상 좌표를 1, 1부터 시작하게 주고 있음
-    visited = [[[0]*4 for _ in range(M)] for _ in range(N)] # (D) visited 초기화 위치 생각하자 제발
-    visited[cr][cc][cd] = 1
+    visited = [[0 for _ in range(M)] for _ in range(N)]
+    # visited = [[[0]*4 for _ in range(M)] for _ in range(N)] # (D) visited 초기화 위치 생각하자 제발
+    visited[cr][cc] = visited[cr][cc] | (1<<cd) # (D) visited 초기화 위치 생각하자 제발 + bitmasking
     sec = 0
     while True:  # 나가거나, 왔던 위치에 동일한 방향이면 종료
         # print(cr, cc, cd)
@@ -43,14 +48,16 @@ for sd in range(4):
                 ans = sec
                 ans_d = to_char[sd]  # cd 아님 주의
             break
-        if ARR[nr][nc] in ["/", "\\"]:
-            cd = ND[ARR[nr][nc]][cd]
+        if ARR[nr][nc] == "/":
+            cd = ND[0][cd]
+        elif ARR[nr][nc] == "\\":
+            cd = ND[1][cd]
         cr, cc = nr, nc
-        if visited[cr][cc][cd] == 1:  # 해당위치에 같은 방향으로 다시 왔다면 무한으로 voyager
+        if visited[cr][cc] & (1<<cd) == 1:  # 해당위치에 같은 방향으로 다시 왔다면 무한으로 voyager
             ans = -1
             ans_d = to_char[sd]
             break
-        visited[cr][cc][cd] = 1
+        visited[cr][cc] = visited[cr][cc] | (1<<cd)
 
     if ans == -1:  # 무한이면 나머지는 볼 필요도 없음
         break
