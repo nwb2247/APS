@@ -54,16 +54,19 @@ tetros = list(sset)
 
 N, M = map(int, input().split())
 ARR = [list(map(int, input().split())) for _ in range(N)]
+mx = max(map(max, ARR))
 ans = 0
 for cr in range(N):
     for cc in range(M):
         for tetro in tetros:
             sm = 0
-            for tr, tc in tetro:
+            for i, (tr, tc) in enumerate(tetro):
                 nr, nc = cr+tr, cc+tc
                 if not (0<=nr<N and 0<=nc<M):
                     break # 이 테트로는 망함, sm 쓸모 없음
                 sm += ARR[nr][nc]
+                if sm + (4-i-1)*mx <= ans:  # (D) 가지치기
+                    break
             else:
                 # break 되지 않았다면 범위내 있는 테트로 이므로 ans에 반영
                 ans = max(ans, sm)
