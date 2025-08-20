@@ -13,45 +13,42 @@ N = 5
 K = 7
 arr = [list(input()) for _ in range(N)]
 visited = [[0 for _ in range(N)] for _ in range(N)]
-contained = [() for _ in range(K)]
 
 def oob(r, c):
     return not (0<=r<N and 0<=c<N)
 
-def backtrack(depth, Y):
+def backtrack(depth, contained, Y):
 
     if Y >= 4:
         return
 
     if depth == K:
-        tmp = contained[:] # 깊은 복사
-        tmp.sort()
-        lst.append(tuple(tmp))
+        # tmp = contained[:] # 깊은 복사
+        # tmp.sort()
+        lst.append(tuple(sorted(contained)))  # sorted 쓰면 원본 배열에 영향 X
         return
 
-    for cr, cc in contained[:depth]:
+    for cr, cc in contained:
         for dr, dc in DS:
             nr, nc = cr+dr, cc+dc
             if oob(nr, nc) : continue
             if visited[nr][nc] == 0:
                 visited[nr][nc] = 1
-                contained[depth] = (nr, nc)
-                backtrack(depth + 1, Y + (1 if arr[nr][nc] == "Y" else 0))
+                backtrack(depth + 1, contained + [(nr, nc)], Y + (1 if arr[nr][nc] == "Y" else 0))
                 visited[nr][nc] = 0
-                contained[depth] = 0
-
-
+                # contained[depth] = 0 # 필요 X
 
 
 cnt = 0
 for sr in range(N):
     for sc in range(N):
         visited[sr][sc] = 1
-        contained[0] = (sr, sc)
         lst = []
-        backtrack(1, 1 if arr[sr][sc] == "Y" else 0)
+        backtrack(1, [(sr, sc)], 1 if arr[sr][sc] == "Y" else 0)
         cnt += len(set(lst))
 print(cnt)
+
+
 
 
 
