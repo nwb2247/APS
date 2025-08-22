@@ -1,4 +1,6 @@
 """
+q nq 이용한 BFS
+
 
 """
 from collections import deque
@@ -15,7 +17,7 @@ visited = [[-1 for _ in range(M)] for _ in range(N)]
 
 q = deque()
 q.append((0, 0))
-visited[0][0] = 0
+visited[0][0] = 0 # 0초에 공기인 것들
 nq = deque()
 melt_amount = []
 while q:
@@ -29,10 +31,10 @@ while q:
             if visited[nr][nc] == -1:
                 if arr[nr][nc] == 0:
                     visited[nr][nc] = visited[cr][cc]
-                    q.append((nr, nc))
+                    q.append((nr, nc))      # 0초에 공기인것들은 q에 넣어주고 (이전에 방문하지 않았던 치즈 구멍들도 포함)
                 else:
                     visited[nr][nc] = visited[cr][cc] + 1
-                    nq.append((nr, nc))
+                    nq.append((nr, nc))     # 1초가 공기가 될것들 (0초에 공기인것과 붙어있는 치즈)는 nq에 넣어줌
 
     if not nq:  # 치즈가 없다면 종료
         break
@@ -52,7 +54,7 @@ while q:
     #     print(*l)
     # print()
     #
-    # print(q)
+    # print(q)1
     # print(nq)
 
     q, nq = nq, deque()
