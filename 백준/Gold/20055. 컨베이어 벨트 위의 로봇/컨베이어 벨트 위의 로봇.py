@@ -1,4 +1,37 @@
 """
+[한줄평]
+문제를 오해한채로 풀었음에도 운좋게 맞은 문제
+올린다, 내린다, 의 표현을 자의적으로 해석하지 말고 그림과 함께 이해하자
+(안되면 테케라도 보고 이해하기)
+
+[타임라인]
+이해 및 구상 : 17분
+구현 : 27분
+디버깅 : 13분
+-----------
+총 57분
+
+알고리즘 : 구현
+
+[구상]
+-) 문제를 제대로 이해하지 못한 채 구현으로 넘어감,
+    사실 문제를 이해했다고 생각했으나, 완전히 잘못생각하고 있었음
+    (한줄로 구성된 컨베이어벨트가 아닌, 원형으로 돌아가는 2차원 벨트로 이해함)
+-) 잘못 이해한 채로 구현하려나보니, 가장 늦게 올라간 로봇이 무엇인지 이해하는데 시간을 쓸때 없이 많이 잡아먹음
+
+[구현]
+-) 이해를 못한채로 적혀있는 것을 구현하려보니 다시 구상단계로 넘어가고, 자료를 정의하는데에도 시간을 잡아먹음
+
+[디버깅]
++) 답이 나오지 않자 곧바로 확인이 쉽도록  print()를 찍어보고 어디가 잘못된건지 이해함
+-) 디버깅 단계가 되어서야 문제의 요구사항을 제대로 파악,
+    but 리팩토링 시간이 부족해 주어진 코드를 그대로 제출
+    다행히 요구 사항을 그대로 작성해서 맞았으나 리팩토링 꼭 필요할 듯
+
+"""
+
+
+"""
 그림 상으로 1번부터 2N
 1-> 올리는 위치 (0번부터 시작한다면 0이 )
 N 내리는 위치    (0번부터 시작한다면 N-1)
@@ -30,50 +63,46 @@ while True:
 로봇는 lst로 관리하자. 단 가장 먼저 올라간 로봇은 lst[0]
 즉 0부터 마지막 로봇까지 움직여줌
 
-가장 오래된 로봇 =>
 
 """
-from collections import deque
-
 N, K = map(int, input().split())
-A = list(map(int, input().split()))
+A = list(map(int, input().split())) # 내구도
 
-
-up, down = 0, N-1 # 업데이트시 %2N
-sec = 0
-robots = []
-robot_idx = 0
-belts = [0]*2*N
+up, down = 0, N-1   # 현 올리는 위치, 내리는 위치
+sec = 0             # 몇 단계인지
+robots = []         # 추가된 로봇의 리스트
+robot_idx = 0       # (불필요,,,)
+belts = [0]*2*N     # 벨트위에 로봇의 존재여부
 cnt = 0
 while True:
     sec += 1
     up = (up + 2*N-1)%(2*N)
     down = (down + 2*N-1)%(2*N)
 
-    for i in range(len(robots)):
+    for i in range(len(robots)):    # 즉시! 내림
         if robots[i] == down:
             belts[down] = 0
             robots.pop(i)
             break
 
-    for i in range(len(robots)):
+    for i in range(len(robots)):    # 현재 있는 로봇에 대해서
         pos = robots[i]
-        npos = (pos + 1)%(2*N)
-        if belts[npos] == 0 and A[npos] > 0:
+        npos = (pos + 1)%(2*N)      # 다음 로봇 pos 업데이트
+        if belts[npos] == 0 and A[npos] > 0:    # npos에 로봇 없고 내구도 존재하면 옮김
             robots[i] = npos
             A[npos] -= 1
             if A[npos] == 0:
                 cnt += 1
-            belts[npos] = 1
-            belts[pos] = 0
+            belts[npos] = 1     # belts 상에서도 바꿔줌
+            belts[pos] = 0      # (D) 0으로 만드는 것 깜박함
 
-    for i in range(len(robots)):
+    for i in range(len(robots)):    # 즉시! 내림
         if robots[i] == down:
             belts[down] = 0
             robots.pop(i)
             break
 
-    if A[up] > 0:
+    if A[up] > 0:                   # 올리는 곳에 내구도 남아있으면 올림
         robots.append(up)
         belts[up] = 1
         A[up] -= 1
