@@ -36,7 +36,7 @@ while q:
                     break
             else:
                 v[nr][nc][ck+1] = v[cr][cc][ck] + 1
-                q.append((nr, nc, ck+1))
+                q.appendleft((nr, nc, ck+1))
 
     for dr, dc in monkey:
         nr, nc = cr+dr, cc+dc
