@@ -1,4 +1,5 @@
 """
+(테스트 : H-1, W-1 만나도 break안하고 갱신만 하면 터짐?)
 3차원, 이동횟수는 q로 관리, v는 방문여부만 (방문했다는 것은 이미 최소거리로 도달했다는 뜻)
 +
 같은 k에서만 비교 (뭐가 더 빠를지?)
@@ -37,7 +38,7 @@ while q:
 
     if (cr, cc) == (H - 1, W - 1):
         ans = min(ans, sec)
-        break
+        # break
 
     if ck < K:
         for dr, dc in horse:
@@ -57,6 +58,11 @@ while q:
         if v[nr][nc] == -1 or v[nr][nc] > ck:
             v[nr][nc] = ck
             q.append((nr, nc, ck, sec + 1))
+
+if ans == float("inf"):
+    print(-1)
+else:
+    print(ans)
 
 # """
 # 3차원, 이동횟수는 q로 관리, v는 방문여부만 (방문했다는 것은 이미 최소거리로 도달했다는 뜻)
@@ -120,11 +126,6 @@ while q:
 
 # for l in v:
 #     print(l)
-
-if ans == float("inf"):
-    print(-1)
-else:
-    print(ans)
 
 # """
 # 3차원, 이동횟수는 q로 관리, v는 방문여부만 (방문했다는 것은 이미 최소거리로 도달했다는 뜻)
