@@ -4,19 +4,6 @@
 
 현재 초에 따라서 어디로 나가야하는지 결정됨
 
-
-2
-########
-###S.###
-########
-...#E###
-#####.##
-########
-###.####
-########
----------
-17?
-
 """
 
 from collections import deque
@@ -38,11 +25,7 @@ def rotate(r, c):
 
 K = int(input())
 R, C = 4 * K, 4 * K
-arr = [list(input()) for _ in range(R)]
-
-# for l in arr:
-#     print(l)
-
+arr = [list(input()) for _ in range(4 * K)]
 v = [[[-1 for _ in range(4)] for _ in range(C)] for _ in range(R)]
 q = deque()
 for tr in range(R):
@@ -60,35 +43,17 @@ while q:
         ans = v[cr][cc][crot]
         break
 
-    f = 0
-
     for dr, dc in ds:
-        nr, nc = cr+dr, cc+dc
+        nr, nc = cr + dr, cc + dc
         if (nr // 4, nc // 4) == (cr // 4, cc // 4):
             if oob(nr, nc):
                 continue
             if arr[nr][nc] == "#":
                 continue
-            if v[nr][nc][(crot+1)%4] != -1:
+            if v[nr][nc][(crot + 1) % 4] != -1:
                 continue
             v[nr][nc][(crot + 1) % 4] = v[cr][cc][crot] + 1
             q.append((nr, nc, (crot + 1) % 4))
-
-            # for r in range(R):
-            #     for c in range(C):
-            #         print(v[r][c][(crot + 1) % 4], end="\t")
-            #     print()
-            # print()
-
-            if arr[nr][nc] == "E":
-                ans = v[nr][nc][(crot + 1) % 4]
-                f = 1
-                break
-            # print(cr, cc, "|", nr, nc)
-        if f:
-            break
-    if f:
-        break
 
     tr, tc = cr, cc
     for _ in range(crot):
@@ -106,62 +71,39 @@ while q:
         v[nr][nc][1] = v[cr][cc][crot] + 1
         q.append((nr, nc, 1))
 
-        # for r in range(R):
-        #     for c in range(C):
-        #         print(v[r][c][0], end="\t")
-        #     print()
-        # print()
-
-        # print(cr, cc, "|", tr, tc, "|", nr, nc)
-        if arr[nr][nc] == "E":
-            ans = v[nr][nc][1]
-            f = 1
-            break
-        if f:
-            break
-    if f:
-        break
-
-
-
-    # for r in range(R):
-    #     for c in range(C):
-    #         print(v[r][c][0], end=" ")
+    # print(q)
+    #
+    # for rr in range(4):
+    #     print(f"{rr * 90}도")
+    #     for r in range(R):
+    #         for c in range(C):
+    #             print(v[r][c][rr], end=" ")
+    #         print()
     #     print()
-
-def deb(lst):
-    ans = float('inf')
-    for n in lst:
-        if n != -1:
-            ans = min(ans, n)
-    if ans != float('inf'):
-        return ans
-    else:
-        return "#"
-
-
-# for r in range(R):
-#     print(*map(deb , v[r]))
-#
-# for r in range(R):
-#     print(v[r])
-
-
 
 print(ans)
 
-"""
-3
-............
-............
-............
-............
-....S.......
-............
-............
-............
-...E........
-............
-............
-............
-"""
+
+
+
+
+# arr = [[()]*12 for _ in range(12)]
+# for i in range(4, 8):
+#     for j in range(8, 12):
+#         arr[i][j] = (i, j)
+# for l in arr:
+#     print(l)
+# print()
+#
+#
+# new_arr  = [[()]*12 for _ in range(12)]
+# for r in range(12):
+#     for c in range(12):
+#         i = r//4
+#         a = r%4
+#         j = c//4
+#         b = c%4
+#         new_arr[4*i+b][4*j + (3-a)] = arr[4*i+a][4*j+b]
+# for l in new_arr:
+#     print(l)
+# print()
