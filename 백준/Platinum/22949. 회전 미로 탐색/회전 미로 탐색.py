@@ -4,6 +4,12 @@
 
 현재 초에 따라서 어디로 나가야하는지 결정됨
 
+br, bc : 회전해도 변하지 않는 기준점 (정수 좌표가 되도록 잡자)
+dr, dc : 현재 위치가 기준점과 떨어진 정도 (방향 배열 ds의 dr, dc와 혼동하면 안됨)
+즉 cr, cc == br+dr, bc+dc 가 되기 위해서
+=> dr, dc = cr-br, cc-bc
+offset_r, offset_c : 원하는 위치가 되도록 하기 위해 더해줘야하는 크기
+
 """
 
 from collections import deque
@@ -15,12 +21,20 @@ def oob(r, c):
     return not (0 <= r < R and 0 <= c < C)
 
 
-def rotate(r, c):
-    i = r // 4
-    a = r % 4
-    j = c // 4
-    b = c % 4
-    return 4 * i + b, 4 * j + (3 - a)
+def rotate(cr, cc): # rotate 로직 test
+    i, j = cr//4, cc//4 # (영역의 좌상단)
+    br, bc = 4 * i - 1, 4 * j - 1 # 회전 기준을 정수로 잡으려면 좌상단의 왼쪽위로 잡아야함 (offset of r : 5)
+    dr, dc = cr - br, cc - bc
+    offset_r = 5
+    return br + dc, bc - dr + offset_r
+
+
+# def rotate(r, c):
+#     i = r // 4
+#     a = r % 4
+#     j = c // 4
+#     b = c % 4
+#     return 4 * i + b, 4 * j + (3 - a)
 
 
 K = int(input())
