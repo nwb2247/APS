@@ -5,6 +5,18 @@
 
 (번호, 상하, 좌우, 회전수 오른쪽)
 
+---------------------
+
+주의 :
+90, 270 도로 뉘여진 경우에는
+UD flip이 원본의 RL flip이고
+LR flip이 원본의 UD flip임
+
+이렇게 원본 기준으로 UD, LR을 생각해 적용해주므로
+마지막에 UD, LR, ROT을 적용할때도
+먼저 원본에 대해 UD, LR를 적용하고
+그 다음에 ROT을 수행해야함
+
 """
 import sys
 input = sys.stdin.readline
@@ -58,7 +70,8 @@ for i in range(4):
     row, col = i//2, i%2
     a = p[s[row][col]]
 
-    # 뒤집기 부터 먼저 수행
+    # 위에서 원본 기준으로 UD, LR응 생각해 적용해줬기 때문에
+    # UD, LR 뒤집기부터 먼저 수행하고 돌려줘야함
     if UD:
         at = [list(lst) for lst in zip(*a)]
         at = [lst[::-1] for lst in at]
@@ -80,4 +93,11 @@ for i in range(len(np[0])):
 
 for l in res:
     print(*l)
+
+
+
+
+
+
+
 
