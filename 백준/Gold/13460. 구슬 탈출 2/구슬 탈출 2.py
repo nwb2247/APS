@@ -89,25 +89,9 @@ def backtrack(depth, red, blue):
         nred, nblue = tilt(red, blue, cd)
 
         # [2] 하부 재귀 호출
-        backtrack(depth + 1, nred, nblue)
-
-        # print("before")
-        # print(red, blue)
-        # for l in arr:
-        #     print(l)
-
-        # [3] 다시 원복
-        # arr[red[0]][red[1]] = "R"
-        # arr[blue[0]][blue[1]] = "B"
-        # if nred != target:
-        #     arr[nred[0]][nred[1]] = "."
-        # if nblue != target:
-        #     arr[nblue[0]][nblue[1]] = "."
-
-        # print("after")
-        # print(nred, nblue)
-        # for l in arr:
-        #     print(l)
+        if v[nred[0]][nred[1]][nblue[0]][nblue[1]] > depth+1:
+            v[nred[0]][nred[1]][nblue[0]][nblue[1]] = depth+1
+            backtrack(depth + 1, nred, nblue)
 
 
 R, C = map(int, input().split())
@@ -128,21 +112,12 @@ for zr in range(R):
         if arr[zr][zc] == "O":
             target = (zr, zc)
 
+v = [[[[K+1 for _ in range(C)] for _ in range(R)] for _ in range(C)] for _ in range(R)]
+
+
 ans = K + 1
 backtrack(0, r, b)
 if ans == K + 1:
     print(-1)
 else:
     print(ans)
-
-# ways = [2, 1, 3, 1, 2]
-# for i in ways:
-#     arr[r[0]][r[1]] = "."
-#     arr[b[0]][b[1]] = "."
-#     nr, nb = tilt(r, b, i)
-#     arr[nr[0]][nr[1]] = "R"
-#     arr[nb[0]][nb[1]] = "B"
-#     r, b = nr, nb
-#     for l in arr:
-#         print(l)
-#     print()
