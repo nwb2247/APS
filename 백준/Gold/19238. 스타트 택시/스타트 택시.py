@@ -1,4 +1,11 @@
 """
+연료 확인 로직 반복이긴 하지만,
+find, to_dest에서 처리하는 것보다 solved에서 처리하는게 더깔끔한듯 (넣으면 실수 가능성..)
+
+BFS인데, 같은 거리 중에서는 특정 기준으로 하나 선택 ==> q, nq를 떠올리자!!!!
+"""
+
+"""
 [이해]
 빈칸 or 벽
 특정 위치로 이동시 최단 경로로만 이동
@@ -41,6 +48,148 @@ dest에서 도착지 가져와서 거리를 BFS로 다시 계산
 중간에 -1 줘야하므로 solve 사용
 
 """
+# from collections import deque
+#
+# ds = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # 상하좌우
+#
+#
+# def oob(r, c):
+#     return not (0 <= r < N and 0 <= c < N)
+#
+#
+# def find(tr, tc):
+#     """
+#     :param tr:
+#     :param tc:
+#     :return:
+#         dist, nr, nc 반환
+#         태울 승객이 없다면 0, -1, -1 반환하게 해야함
+#     """
+#
+#     v = [[-1] * N for _ in range(N)]
+#     q = deque()
+#
+#     v[tr][tc] = 0
+#     q.append((tr, tc))
+#
+#     info = []  # 출발지
+#
+#     # 벽이 아닌 경우에만 append()
+#     while q:
+#         cr, cc = q.popleft()
+#         if arr[cr][cc] == 2:
+#             info.append((v[cr][cc], cr, cc))
+#
+#         for dr, dc in ds:
+#             nr, nc = cr + dr, cc + dc
+#             if oob(nr, nc):
+#                 continue
+#             if arr[nr][nc] == 1:
+#                 continue
+#             if v[nr][nc] != -1:
+#                 continue
+#             v[nr][nc] = v[cr][cc] + 1
+#             q.append((nr, nc))
+#
+#     if len(info) == 0:  # 태울 승객 없다면
+#         return 0, -1, -1
+#
+#     info.sort(key=lambda x: (x[0], x[1], x[2]))
+#     # print(info)
+#     return info[0]
+#
+#
+# def to_dest(tr, tc):
+#     """
+#     :param tr: 택시 위치이자, 승객 위치
+#     :param tc:
+#     :return: dest[tr][tc]까지의 거리
+#
+#     """
+#     er, ec = dest[tr][tc]
+#
+#     v = [[-1] * N for _ in range(N)]
+#     q = deque()
+#
+#     v[tr][tc] = 0
+#     q.append((tr, tc))
+#     while q:
+#         cr, cc = q.popleft()
+#
+#         if (cr, cc) == (er, ec):
+#             return v[er][ec], er, ec  # dist, r, c 반환
+#
+#         for dr, dc in ds:
+#             nr, nc = cr + dr, cc + dc
+#             if oob(nr, nc):
+#                 continue
+#             if arr[nr][nc] == 1:
+#                 continue
+#             if v[nr][nc] != -1:
+#                 continue
+#             v[nr][nc] = v[cr][cc] + 1
+#             q.append((nr, nc))
+#
+#     # er, ec를 못찾았으면 0, -1, -1 반환
+#     return 0, -1, -1
+#
+#
+# def solve():
+#     cnt = 0  # 목적지 까지 성공적으로 도착한 승객 수 (연료가 바닥나든, 이동이 불가하든, M 못채우면 실패)
+#     fuel = K  # 남은 연료량
+#     tr, tc = TR, TC
+#
+#     while True:
+#         # [1] 태울 승객 위치 찾기
+#         dist0, nr, nc, = find(tr, tc)
+#         # print(nr, nc)
+#         if (nr, nc) == (-1, -1):  # 더 이상 태울 승객이 없다면
+#             break
+#         if fuel < dist0:
+#             break
+#         fuel -= dist0  # 거리만큼 연료깎고
+#         tr, tc = nr, nc
+#         # (I) 승객 태웠으므로 0으로 만들어줘야함
+#         arr[tr][tc] = 0
+#
+#         # [2] 목적지까지 데려다 주기 (목적지는 반드시 있음)
+#         dist1, nr, nc = to_dest(tr, tc)  # 현재 택시 위치 == 손님 위치
+#         if (nr, nc) == (-1, -1):  # (I) 도달할 수 없다면
+#             break
+#         if fuel < dist1:
+#             break
+#         fuel -= dist1
+#         tr, tc = nr, nc
+#
+#         # [3] 성공적으로 목적지까지 도달해야 cnt올라감
+#         cnt += 1
+#         fuel += dist1 * 2  # 승객의 출발지 -> 목적지의 거리 dist*2를 해줌
+#
+#         # print(fuel)
+#         # for l in arr:
+#         #     print(l)
+#         # print()
+#
+#     # while 문 끝났다면 cnt가 손님수 M 가 일치하면 fuel 반환 그렇지 않으면 -1 반환
+#     if cnt == M:
+#         return fuel
+#     else:
+#         return -1
+#
+#
+# N, M, K = map(int, input().split())
+# arr = [list(map(int, input().split())) for _ in range(N)]
+# TR, TC = map(lambda x: int(x) - 1, input().split())  # 택시 좌표 (1씩빼서 받기)
+# dest = [[(-1, -1) for _ in range(N)] for _ in range(N)]
+# for _ in range(M):
+#     SR, SC, ER, EC = map(int, input().split())
+#     arr[SR - 1][SC - 1] = 2  # 맵에 바로 표시 : 모든 승객의 출발지가 다르므로!!!! 가능한 방법 (아니라면 불가능)
+#     dest[SR - 1][SC - 1] = (ER - 1, EC - 1)
+#
+# print(solve())
+
+
+# 리팩토링 ver : (
 from collections import deque
 
 ds = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # 상하좌우
@@ -65,31 +214,34 @@ def find(tr, tc):
     v[tr][tc] = 0
     q.append((tr, tc))
 
-    info = []  # 출발지
+    info = []  # 거리, 행, 열 (승객 위치)
 
-    # 벽이 아닌 경우에만 append()
+    # 벽이 아닌 경우에만 append() + 같은 거리 승객이 여러명 중 정렬 -> q, nq을 떠올려 보자
     while q:
-        cr, cc = q.popleft()
-        if arr[cr][cc] == 2:
-            info.append((v[cr][cc], cr, cc))
+        nq = deque()
+        while q:
+            cr, cc = q.popleft()
+            if arr[cr][cc] == 2:
+                info.append((v[cr][cc], cr, cc))
+            for dr, dc in ds:
+                nr, nc = cr + dr, cc + dc
+                if oob(nr, nc):
+                    continue
+                if arr[nr][nc] == 1:
+                    continue
+                if v[nr][nc] != -1:
+                    continue
+                v[nr][nc] = v[cr][cc] + 1
+                nq.append((nr, nc))
 
-        for dr, dc in ds:
-            nr, nc = cr + dr, cc + dc
-            if oob(nr, nc):
-                continue
-            if arr[nr][nc] == 1:
-                continue
-            if v[nr][nc] != -1:
-                continue
-            v[nr][nc] = v[cr][cc] + 1
-            q.append((nr, nc))
+        if info:    # 이번 턴에 info에 들어온 것들이 있다면
+            info.sort() # sort 쓰면 기본으로 사전순 정렬이 들어감 (순서 바꾸고 싶을때만 lambda 쓰자)
+            return info[0]
 
-    if len(info) == 0:  # 태울 승객 없다면
-        return 0, -1, -1
+        q = nq
 
-    info.sort(key=lambda x: (x[0], x[1], x[2]))
-    # print(info)
-    return info[0]
+    return 0, -1, -1
+
 
 
 def to_dest(tr, tc):
