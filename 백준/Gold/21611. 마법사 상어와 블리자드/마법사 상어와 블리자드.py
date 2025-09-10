@@ -1,4 +1,47 @@
 """
+[시간 나면 다시 풀기]
+
+- 입력 받을 때 자주 쓰는 건 global로 두고, 복사, 원복 등 특수한 경우에 인자로 넘기는 것을 고려
+- 달팽이 방향으로 땡기는거 -> 2차원 1차원 표현 둘다 사용해서 연결 굿
+- 중력, 당기기는 그냥 무조건 queue(or stack) 먼저 생각하자....
+- indent 항상 조심
+
+[바로잡은 문제 조건]
+남은 것의 개수가 아니라, "폭발"된 것을 세는 거였음 ( + 블리자드로 "파괴"된 것은 세면 안됨)
+
+[엣지 케이스]
+7 1
+1 1 1 2 2 2 3
+1 2 2 1 2 2 3
+1 3 2 2 3 1 2
+1 2 1 0 3 2 2
+3 1 1 1 1 2 2
+3 1 2 1 1 2 1
+3 1 2 2 2 1 1
+1 3
+---------
+16 (1번자리부터 동일한 거 4개 이상 나오는 거 확인용)
+
+[타임라인]
+이해 및 구상 22분
+구현 59분
+디버깅 16분
+-------------
+총 97분
+
+[이해 및 구상]
+-) 변수명 미리 생각하지 못해서 구현 때 고민함
++) 실수할만한 것, 헷갈리는 표현 위주로 정리
++) N이 홀수이기때문에, 1로 패딩하고 (N-1)/2하는 거 대신에 N//2로 바로 가도 안전한지 확인하고 넘어감
+
+[디버깅]
++) 큰 사이즈 만들어보기 (시간 확인용), 문제 다시보기, 코드 한줄씩 읽기...
++) 1번 자리부터 연속된 것이 4개 이상 나오는 경우, 3개까지만 나오는 경우 등 만들고 검증
+
+
+"""
+
+"""
 N*N N홀수
 1, 1부터 시작 ~ N, N
 상어 (N+1)/2에서 시작
@@ -28,13 +71,14 @@ N*N N홀수
 100 (M) * 500 (N*N) => 가능
 
 """
-from collections import deque
 
 ds = {1: (-1, 0), 2: (1, 0), 3: (0, -1), 4: (0, 1)}  # 1상 2하 3좌 4우
 
 N, K = map(int, input().split())  # N*N, K:마법의 수
 ARR = [list(map(int, input().split())) for _ in range(N)]
 ops = [tuple(map(int, input().split())) for _ in range(K)]
+# info = [0] * (N * N)    # info도 글로벌
+# box = make_box()        # box도 글로벌
 
 types = {1, 2, 3}
 
@@ -86,13 +130,13 @@ def magic(d, s):  # s는 범위밖으로 벗어나지 않음
 
 
 def pull():
-    tmp = deque()
-    for idx in range(1, N * N):  # 맨 좌측 상단은 N*N-1임...
+    tmp = []
+    for idx in range(N * N - 1, 0, -1):  # 맨 좌측 상단은 N*N-1임...
         if info[idx] != 0:
             tmp.append(info[idx])
     for idx in range(1, N * N):
         if tmp:
-            info[idx] = tmp.popleft()
+            info[idx] = tmp.pop()
         else:
             info[idx] = 0
 
@@ -118,18 +162,21 @@ def explode():
 
 
 def change():
-    tmp = deque()
-    cnt = 1  # (1번은 이미 세었다고 가정)
-    for idx in range(2, N * N):  # 상어는 넣으면 안되므로 2부터 하자...
-        if info[idx] != info[idx - 1]:
+    tmp = []
+    for start in range(N*N - 1, -1, -1):
+        if info[start] != 0:
+            break
+    cnt = 1  # (start번은 이미 세었다고 가정)
+    for idx in range(start - 1, -1, -1):  # 상어만나면서 마지막으로 처리가 되어야함
+        if info[idx] != info[idx + 1]:
+            tmp.append(info[idx + 1])   # 그 다음 종류를 넣어주기
             tmp.append(cnt)     # 개수를 먼저 넣어주고
-            tmp.append(info[idx - 1])   # 그 다음 종류를 넣어주기
             cnt = 1
         else:
             cnt += 1
     for idx in range(1, N * N):  # tmp가 더 긴 경우에도 N*N-1까지만 들어간다...
         if tmp:
-            info[idx] = tmp.popleft()
+            info[idx] = tmp.pop()
         else:
             info[idx] = 0
 
@@ -159,13 +206,13 @@ def solve():
     return
 
 
-info = [0] * (N * N)  # info도 글로벌
-box = make_box()
+info = [0] * (N * N)    # info도 글로벌
+box = make_box()        # box도 글로벌
 for ZR in range(N):
     for ZC in range(N):
         info[box[ZR][ZC]] = ARR[ZR][ZC]
 
-ans = 0  # 폭발한거만 세자 (not 마법에 의한 파괴
+ans = 0  # 폭발한거만 세자 (not 마법에 의한 파괴)
 
 solve()
 print(ans)
