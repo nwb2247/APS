@@ -40,17 +40,6 @@ def roll():
         bottom = bottom[len(added):]
 
     rolled.append(bottom)
-    # for l in rolled:
-    #     print(*map(lambda x: str(x).rjust(4), l))
-    # for l in rolled:
-    #     print(l)
-
-    # arr = [[-1 for _ in range(len(rolled[-1]))] for _ in range(len(rolled))]
-    # for cr in range(len(rolled)):
-    #     for cc in range(len(rolled[cr])):
-    #         arr[cr][cc] = rolled[cr][cc]
-    # for l in arr:
-    #     print(*map(lambda x:str(x).rjust(4), l))
 
     return rolled
 
@@ -60,6 +49,7 @@ def roll():
 N, K = map(int, input().split())
 LST = list(map(int, input().split()))
 ds = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # 상하좌우
+SNAIL = roll()
 
 
 def oob(r, c, arr):
@@ -74,7 +64,7 @@ def add_one():
 
 
 def do_snail():
-    snail = roll()
+    snail = [list(lst[:]) for lst in SNAIL]
     for cr in range(len(snail)):
         for cc in range(len(snail[cr])):
             snail[cr][cc] = LST[snail[cr][cc]]
@@ -133,12 +123,15 @@ def solve():
     while True:
         turn += 1
         add_one()
+
         snail = do_snail()
         snail = adjust(snail)
         flatten(snail)
+
         arr = stand()
         arr = adjust(arr)
         flatten(arr)
+
         if max(LST) - min(LST) <= K:
             return turn
 
