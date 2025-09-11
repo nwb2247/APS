@@ -1,6 +1,11 @@
 """
 [시간 나면 다시 풀기]
 
+- !!!!! (D) 연속된 4개 찾는 explode 로직 정리해야함
+        (원래 코드대로라면 N*N-4, N*N-3, N*N-2, N*N-1 이 연속인 경우를 잡아내지 못함..)
+        => for문을 다 돌고 나서도, cnt >= 4인지를 확인해줘야함
+
+        (문제 조건 상 마법을 쓰기 때문에 마지막칸은 무조건 비긴 하지만 다른 문제였다면...)
 - 입력 받을 때 자주 쓰는 건 global로 두고, 복사, 원복 등 특수한 경우에 인자로 넘기는 것을 고려
 - 달팽이 방향으로 땡기는거 -> 2차원 1차원 표현 둘다 사용해서 연결 굿
 - 중력, 당기기는 그냥 무조건 queue(or stack) 먼저 생각하자....
@@ -71,6 +76,7 @@ N*N N홀수
 100 (M) * 500 (N*N) => 가능
 
 """
+from collections import deque
 
 ds = {1: (-1, 0), 2: (1, 0), 3: (0, -1), 4: (0, 1)}  # 1상 2하 3좌 4우
 
@@ -130,13 +136,13 @@ def magic(d, s):  # s는 범위밖으로 벗어나지 않음
 
 
 def pull():
-    tmp = []
-    for idx in range(N * N - 1, 0, -1):  # 맨 좌측 상단은 N*N-1임...
+    tmp = deque()
+    for idx in range(1, N * N):  # 맨 좌측 상단은 N*N-1임...
         if info[idx] != 0:
             tmp.append(info[idx])
     for idx in range(1, N * N):
         if tmp:
-            info[idx] = tmp.pop()
+            info[idx] = tmp.popleft()
         else:
             info[idx] = 0
 
@@ -146,37 +152,41 @@ def explode():
 
     cnt = 0
     found = False
-    for idx in range(1, N * N):  # 1번은 항상다름(0번이 상어이므로)
-        if info[idx] != info[idx - 1]:  # 다른거 나왔다면,
+    for idx in range(1, N * N + 1):  # N*N 까지 돌고
+        if idx == N * N or info[idx] == 0:  # 끝을 넘어갔거나(oob), 0이 나왔다면
             # [1] 이전에 쌓였던게 4이상인지 확인하고 맞다면 지워줌
             if cnt >= 4:
-                found = True    # 이번에 폭발한게 있음을 확인
-                ans += cnt * info[idx - 1] # 점수 추가
+                found = True  # 이번에 폭발한게 있음을 확인
+                ans += cnt * info[idx - 1]  # 점수 추가
                 for j in range(cnt):
                     info[idx - 1 - j] = 0
-            # [2] cnt = 1로 초기화
+            return found  # 종료
+        elif info[idx] != info[idx - 1]:  # 전과 다르다면
+            # [1] 이전에 쌓였던게 4이상인지 확인하고 맞다면 지워줌
+            if cnt >= 4:
+                found = True  # 이번에 폭발한게 있음을 확인
+                ans += cnt * info[idx - 1]  # 점수 추가
+                for j in range(cnt):
+                    info[idx - 1 - j] = 0
+            # [2] cnt = 1로 초기화하고 계속 진행
             cnt = 1
         else:
             cnt += 1
-    return found
 
 
 def change():
-    tmp = []
-    for start in range(N*N - 1, -1, -1):
-        if info[start] != 0:
-            break
-    cnt = 1  # (start번은 이미 세었다고 가정)
-    for idx in range(start - 1, -1, -1):  # 상어만나면서 마지막으로 처리가 되어야함
-        if info[idx] != info[idx + 1]:
-            tmp.append(info[idx + 1])   # 그 다음 종류를 넣어주기
-            tmp.append(cnt)     # 개수를 먼저 넣어주고
+    tmp = deque()
+    cnt = 1  # (1번은 미리 세고 시작)
+    for idx in range(2, N * N):  # 상어는 넣으면 안되므로 2부터 하자...
+        if info[idx] != info[idx - 1]:
+            tmp.append(cnt)  # 개수를 먼저 넣어주고
+            tmp.append(info[idx - 1])  # 그 다음 종류를 넣어주기
             cnt = 1
         else:
             cnt += 1
     for idx in range(1, N * N):  # tmp가 더 긴 경우에도 N*N-1까지만 들어간다...
         if tmp:
-            info[idx] = tmp.pop()
+            info[idx] = tmp.popleft()
         else:
             info[idx] = 0
 
@@ -188,26 +198,22 @@ def solve():
         d, s = ops[i]
         # [1] 블리자드 매직 + 당기기
         magic(d, s)
-        # dprint()
         pull()
-        # dprint()
 
         # [2] 폭발
         while True:  # 폭발 당김 반복
             if not explode():
                 break
             pull()
-        # dprint()
 
         # [3] A, B로 변화
         change()
-        # dprint()
 
     return
 
 
-info = [0] * (N * N)    # info도 글로벌
-box = make_box()        # box도 글로벌
+info = [0] * (N * N)  # info도 글로벌
+box = make_box()  # box도 글로벌
 for ZR in range(N):
     for ZC in range(N):
         info[box[ZR][ZC]] = ARR[ZR][ZC]
@@ -216,3 +222,65 @@ ans = 0  # 폭발한거만 세자 (not 마법에 의한 파괴)
 
 solve()
 print(ans)
+
+# --------------- 기존 코드 연속 네개 로직 잘못됨 ------------------------
+
+# 원래 코드
+# def explode():
+#     global ans
+#
+#     cnt = 0
+#     found = False
+#     for idx in range(1, N * N):  # 1번은 항상다름(0번이 상어이므로)
+#         if info[idx] != info[idx - 1]:  # 다른거 나왔다면,
+#             # [1] 이전에 쌓였던게 4이상인지 확인하고 맞다면 지워줌
+#             if cnt >= 4:
+#                 found = True  # 이번에 폭발한게 있음을 확인
+#                 ans += cnt * info[idx - 1]  # 점수 추가
+#                 for j in range(cnt):
+#                     info[idx - 1 - j] = 0
+#             # [2] cnt = 1로 초기화
+#             cnt = 1
+#         else:
+#             cnt += 1
+#     return found
+
+# 수정 코드
+# (D) for이 끝난 뒤에도 cnt확인해야함 (마지막을 포함하는 것이 4개 이상인지)
+# if cnt >= 4:
+#     found = True  # 이번에 폭발한게 있음을 확인
+#     ans += cnt * info[N * N - 1]  # 점수 추가
+#     for j in range(cnt):
+#         info[N * N - 1 - j] = 0
+
+
+# 입력
+# dprint()
+# 7 1
+# 1 1 1 1 1 2 3
+# 1 2 2 1 2 2 3
+# 1 3 3 2 3 1 2
+# 1 2 2 0 3 2 2
+# 3 1 2 2 3 2 2
+# 3 1 2 1 1 2 1
+# 3 1 2 1 1 1 1
+# 1 3
+
+# explode()
+# dprint()
+# 원래 코드로 터트린 결과
+# 1 1 1 1 1 2 3
+# 1 2 2 1 2 2 3
+# 1 3 3 2 3 1 2
+# 1 2 2 0 3 2 2
+# 3 1 2 2 3 2 2
+# 3 1 2 1 1 2 1
+# 3 1 2 1 1 1 1
+# 맵밖을 나가는 것과 0인경우를 고려하는 코드
+# 0 0 0 0 0 2 3
+# 1 2 2 1 2 2 3
+# 1 3 3 2 3 1 2
+# 1 2 2 0 3 2 2
+# 3 1 2 2 3 2 2
+# 3 1 2 1 1 2 0
+# 3 1 2 0 0 0 0
