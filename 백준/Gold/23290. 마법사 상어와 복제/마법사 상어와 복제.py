@@ -1,10 +1,8 @@
 """
-
 물고기 별도의 인덱스 관리는 필요없음...
 
-
 복제
-    복제는 nm에 넣고 기다리자
+    복제는 새 배열에 넣고 기다리자
 
 모든 물고기 한칸 이동
     상어, 물고기, 냄새 -> 이동불가
@@ -76,7 +74,8 @@ def fish_move():
     for cr in range(4):
         for cc in range(4):
             for cd in m[cr][cc]:
-                for nd in list(range(cd, 0, -1)) + list(range(8, cd, -1)):      # (D) 반시계 회전, 주어진 입력은 시계 회전;;;;
+                for dd in range(8):      # (D) 반시계 회전, 주어진 입력은 시계 회전;;;;
+                    nd = (cd-1-dd)%8 + 1
                     dr, dc = ds_fish[nd]
                     nr, nc = cr + dr, cc + dc
                     if oob(nr, nc) or (nr, nc) == (sr, sc) or smell[nr][nc] != 0:
