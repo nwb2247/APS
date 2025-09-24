@@ -1,96 +1,81 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.StringTokenizer;
+"""
 
-public class Solution {
-	
-	static int N, K, pH;
-	static int[][] map;
-	static ArrayList<int[]> pList;
-	
-	static int[] dr = {-1,0,1,0};
-	static int[] dc = {0,1,0,-1};
-	
-	static int sol;
+"""
+def oob(r, c):
+    return not (0<=r<N and 0<=c<N)
 
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st;
-		StringBuilder sb = new StringBuilder();
-		
-		
-		
-		int T = Integer.parseInt(br.readLine());
-		
-		for (int t=1; t<=T; t++) {
-			
-			st = new StringTokenizer(br.readLine());
-			N = Integer.parseInt(st.nextToken());
-			K = Integer.parseInt(st.nextToken());
-			pH = 0;
-			map = new int[N][N];
-			
-			pList = new ArrayList<>();
-			for (int r=0; r<N; r++) {
-				st = new StringTokenizer(br.readLine());
-				for (int c=0; c<N; c++) {
-					map[r][c] = Integer.parseInt(st.nextToken());
-					if (map[r][c] < pH) continue;
-					if (map[r][c] > pH) {
-						pList.clear();
-						pH = map[r][c];
-					}
-						
-					pList.add(new int[] {r,c});
-				}
-			}
-			
-			sol = 0;
-			
-			// 맨 처음 하나도 깎지 않고 확인
-			makePath();
-			
-			// 각 요소(봉우리 후보 포함) 돌면서 1~5까지 깎으면서 확인
-			for (int r=0; r<N; r++) {
-				for (int c=0; c<N; c++) {
-					int originH = map[r][c];
-					for (int i=1; i<=K; i++) {
-						map[r][c] = originH-i;
-						makePath();
-					}
-					// 원상복구
-					map[r][c] = originH;
-				}
-			}
-			
-			sb.append("#").append(t).append(" ").append(sol).append("\n");
-			
-		}
-		
-		System.out.println(sb.toString());
+def init_tops():
+    global tops
+    mx = -1
+    for cr in range(N):
+        for cc in range(N):
+            if mmap[cr][cc] == mx:
+                tops.append((cr, cc))
+            elif mmap[cr][cc] > mx:
+                tops = [(cr, cc)]
+                mx = mmap[cr][cc]
 
-	}
-	
-	private static void makePath() {
-		for (int[] p : pList) {
-			DFS(p[0], p[1], 1);
-		}
-	}
-	
-	private static void DFS(int r, int c, int len) {
-		
-		sol = Math.max(sol, len);
-		
-		for (int d=0; d<4; d++) {
-			int nr = r+dr[d];
-			int nc = c+dc[d];
-			if (nr < 0 || nc < 0 || nr >= N || nc >= N) continue;
-			if (map[nr][nc] >= map[r][c]) continue;
-			DFS(nr, nc, len+1);
-		}
-		
-	}
+def backtrack(pr, pc, v, cnt): # 마지막 위치, 지금까지 뭐넣었는지, 지금까지의 길이
+    global ans
+    ans = max(ans, cnt)
+    # print(v)
 
-}
+    # 종료조건, 4방에 더 갈 곳이 없다면...
+    for cd in range(4):
+        dr, dc = ds[cd]
+        nr, nc = pr+dr, pc+dc
+        if oob(nr, nc) or mmap[nr][nc] >= mmap[pr][pc] or (nr, nc) in v:
+            continue
+        # 갈수 있다면
+        v[nr][nc] = 1
+        backtrack(nr, nc, v, cnt+1)
+        v[nr][nc] = 0 # 원상 복구
+
+    return
+
+def check(v):
+
+    for sr, sc in tops:
+        v[sr][sc] = 1
+        backtrack(sr, sc, v, 1) # 마지막 위치, 지금까지 뭐 넣었는지, 지금까지 넣은 것의 개수
+        v[sr][sc] = 0
+
+
+    return
+
+
+def solve():
+
+    v = [[0 for _ in range(N)] for _ in range(N)]
+
+    # 아무것도 안깎는거 한번 수행
+    check(v) # (D) 주석처리하고 까먹고 안해제함
+
+    for cr in range(N):
+        for cc in range(N):
+            origin = mmap[cr][cc]
+            # for new in range(max(0, origin - K), origin):  # 최대로 많이 깎는거부터, 최소(1)로 깎는거
+            for new in range(max(0, origin - K), origin):  # 최대로 많이 깎는거부터, 최소(1)로 깎는거
+                mmap[cr][cc] = new
+                check(v)
+
+                # for l in mmap:
+                #     print(l)
+                # print()
+                # print(ans)
+
+            mmap[cr][cc] = origin  # 원복
+    return
+
+ds = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+TC = int(input())
+for tc in range(1, TC + 1):
+    N, K = map(int, input().split())
+    mmap = [list(map(int, input().split())) for _ in range(N)]
+    tops = []
+    init_tops() # 가장 높은 봉우리를 깎더라도, 그 점에서 시작할 수 있다... (문제 설명이 모호함)
+
+    ans = 0
+    solve()
+    print(f"#{tc} {ans}")
